@@ -29,7 +29,7 @@ namespace Web_Browser
 
         private void goBtn_Click(object sender, EventArgs e)
         {
-            Console.WriteLine("Go fired");
+            HttpRequests.Get("http://httpstat.us/200");
         }
     }
 }
