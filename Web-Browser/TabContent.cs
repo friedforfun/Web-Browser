@@ -13,37 +13,38 @@ namespace Web_Browser
     /// </summary>
     class TabContent
     {
-        public string url
-        {
-            get => _response.Url;
-        }
-        public string title
-        {
-            get => _response.Title;
-        }
-
-        public string httpCode
-        {
-            get => _response.HttpSourceCode;
-        }
+        public string Url => _response.Url;
+        
+        public string Title => _response.Title;
+        
+        public string HttpCode => _response.HttpSourceCode;
+        
         private TabHistory history;
         private BrowserResponse _response;
 
         public TabContent(string url)
-        {
-            getPage();
+        { 
+            GetPage(url);
             history = new TabHistory();
         }
 
-        private async void getPage()
+        /// <summary>
+        /// Update the BrowserResponse object using Async
+        /// </summary>
+        /// <param name="url">The URL to get the HTTP response from</param>
+        private async void GetPage(string url)
         {
             _response = await HttpRequests.Get(url);
         }
 
-        //! TODO resolve navigate
-        public void navigate(string url)
+        /// <summary>
+        /// Navigate to a new page
+        /// </summary>
+        /// <param name="url">The url to use for navigation</param>
+        public void Navigate(string url)
         {
-            getPage();
+            GetPage(url);
+            history.NewPage(Url, Title);
         }
 
         /// <summary>
@@ -95,6 +96,11 @@ namespace Web_Browser
                 current = Head;
             }
 
+            /// <summary>
+            /// Add a new entry into the tab history
+            /// </summary>
+            /// <param name="url">The url of the page</param>
+            /// <param name="title">The title of the page</param>
             public void NewPage(string url, string title)
             {
                 TabEntry newPage = new TabEntry(url, title);

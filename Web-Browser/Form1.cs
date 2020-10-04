@@ -17,11 +17,6 @@ namespace Web_Browser
             InitializeComponent();
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void menuBtn_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
@@ -35,9 +30,20 @@ namespace Web_Browser
             this.sourceViewer.Text = response.HttpSourceCode;
         }
 
-        private void tabPage1_Enter(object sender, EventArgs e)
+        private void tabPage0_Enter(object sender, EventArgs e)
         {
-            this.tabPage1.Text = "A tab";
+
+        }
+
+        private void NewTab_Enter(object sender, EventArgs e)
+        {
+            int numTabs = tabControl.TabPages.Count -1;
+            string tabName = $"tabPage{numTabs}";
+            tabControl.TabPages.Insert(numTabs, tabName);
+            
+            tabControl.SelectedIndex = numTabs;
+
+            // change current tab to the newly created tab
         }
     }
 }

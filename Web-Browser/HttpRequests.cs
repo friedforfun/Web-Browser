@@ -23,9 +23,15 @@ namespace Web_Browser
             client = new HttpClient();
         }
 
+        /// <summary>
+        /// Send a HTTP GET request to the URI
+        /// </summary>
+        /// <param name="uri">The URI for the request</param>
+        /// <returns>Returns a task wrapping a BrowserResponse</returns>
         public static async Task<BrowserResponse> Get(string uri)
         {
-            var httpres = await client.GetAsync(uri);
+            // perform some validation on url here
+            HttpResponseMessage httpres = await client.GetAsync(uri);
             return new BrowserResponse(httpres);
         }
 
