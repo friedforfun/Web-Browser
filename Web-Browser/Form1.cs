@@ -27,9 +27,17 @@ namespace Web_Browser
 
         }
 
-        private void goBtn_Click(object sender, EventArgs e)
+        private async void goBtn_Click(object sender, EventArgs e)
         {
-            HttpRequests.Get("http://httpstat.us/200");
+            string url = this.URLInput.Text;
+            // make sure url is in the correct format: http://www.<domain>.<suffix>[/:][a-zA-Z0-9]*
+            var response = await HttpRequests.Get(url);
+            this.sourceViewer.Text = response.HttpSourceCode;
+        }
+
+        private void tabPage1_Enter(object sender, EventArgs e)
+        {
+            this.tabPage1.Text = "A tab";
         }
     }
 }
