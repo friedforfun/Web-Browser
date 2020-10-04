@@ -22,12 +22,12 @@ namespace Web_Browser
 
         }
 
-        private async void goBtn_Click(object sender, EventArgs e)
+        private void goBtn_Click(object sender, EventArgs e)
         {
-            string url = this.URLInput.Text;
+            //string url = this.URLInput.Text;
             // make sure url is in the correct format: http://www.<domain>.<suffix>[/:][a-zA-Z0-9]*
-            var response = await HttpRequests.Get(url);
-            this.sourceViewer.Text = response.HttpSourceCode;
+            //var response = await HttpRequests.Get(url);
+            //this.sourceViewer.Text = response.HttpSourceCode;
         }
 
         private void tabPage0_Enter(object sender, EventArgs e)
@@ -37,13 +37,35 @@ namespace Web_Browser
 
         private void NewTab_Enter(object sender, EventArgs e)
         {
-            int numTabs = tabControl.TabPages.Count -1;
-            string tabName = $"tabPage{numTabs}";
-            tabControl.TabPages.Insert(numTabs, tabName);
-            
-            tabControl.SelectedIndex = numTabs;
+            //int numTabs = tabControl.TabPages.Count - 1;
+            //string tabName = $"tabPage{numTabs}";
+            //tabControl.TabPages.Insert(numTabs, tabName);
+
+            //tabControl.SelectedIndex = numTabs;
 
             // change current tab to the newly created tab
+        }
+
+        private async void BrowserWindow_Load(object sender, EventArgs e)
+        {
+            // initialise my tabs ect here
+            BrowserTabControl tabs = new BrowserTabControl();
+            BrowserTabPage HomePage = await BrowserTabPage.AsyncCreate();
+            tabs.Controls.Add(HomePage);
+            //tabs.Controls.Add(this.tabPage1);
+            tabs.Dock = System.Windows.Forms.DockStyle.Fill;
+            tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            tabs.Location = new System.Drawing.Point(0, 0);
+            tabs.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            tabs.Name = "tabControl";
+            tabs.SelectedIndex = 0;
+            tabs.Size = new System.Drawing.Size(1168, 796);
+            tabs.TabIndex = 4;
+
+            Controls.Add(tabs);
+            // Add 'home' BrowserTabPage
+            // Add '+' BrowserTabPage
+
         }
     }
 }

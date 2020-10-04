@@ -32,7 +32,7 @@ namespace Web_Browser
         {
             // perform some validation on url here
             HttpResponseMessage httpres = await client.GetAsync(uri);
-            return new BrowserResponse(httpres);
+            return await BrowserResponse.CreateAsync(httpres);
         }
 
     }
@@ -51,13 +51,19 @@ namespace Web_Browser
         private IDocument _document;
         private string _rawContent;
 
-        public BrowserResponse(HttpResponseMessage message)
+        public static async Task<BrowserResponse> CreateAsync(HttpResponseMessage message)
         {
-            GetContent(message.Content);
+            BrowserResponse br = new BrowserResponse(message);
+            await br.GetContent(message.Content);
+            return br;
+        }
+
+        private BrowserResponse(HttpResponseMessage message)
+        {
             _statusCode = (int)message.StatusCode;
         }
 
-        private async void GetContent(HttpContent content)
+        private async Task<int> GetContent(HttpContent content)
         {
             IConfiguration config = Configuration.Default;
             IBrowsingContext context = BrowsingContext.New(config);
@@ -67,6 +73,8 @@ namespace Web_Browser
             _title = _document.Title;
             _url = _document.Url;
             _source = _document.Source.Text;
+
+            return -1;
         }
     }
 

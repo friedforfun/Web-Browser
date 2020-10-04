@@ -16,15 +16,22 @@ namespace Web_Browser
         public string Url => _response.Url;
         
         public string Title => _response.Title;
-        
+
         public string HttpCode => _response.HttpSourceCode;
         
         private TabHistory history;
         private BrowserResponse _response;
 
-        public TabContent(string url)
+        public static async Task<TabContent> AsyncCreate(string url)
+        {
+            TabContent tc = new TabContent(url);
+            await tc.GetPage(url);
+            return tc;
+        } 
+
+        private TabContent(string url)
         { 
-            GetPage(url);
+            //GetPage(url);
             history = new TabHistory();
         }
 
@@ -32,18 +39,19 @@ namespace Web_Browser
         /// Update the BrowserResponse object using Async
         /// </summary>
         /// <param name="url">The URL to get the HTTP response from</param>
-        private async void GetPage(string url)
+        private async Task<BrowserResponse> GetPage(string url)
         {
             _response = await HttpRequests.Get(url);
+            return _response;
         }
 
         /// <summary>
         /// Navigate to a new page
         /// </summary>
         /// <param name="url">The url to use for navigation</param>
-        public void Navigate(string url)
+        public async void Navigate(string url)
         {
-            GetPage(url);
+            await GetPage(url);
             history.NewPage(Url, Title);
         }
 
