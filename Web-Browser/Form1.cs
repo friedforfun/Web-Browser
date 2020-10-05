@@ -48,9 +48,10 @@ namespace Web_Browser
 
         private async void BrowserWindow_Load(object sender, EventArgs e)
         {
+            Console.WriteLine("window width: {0}", Width);
             // initialise my tabs ect here
-            BrowserTabControl tabs = new BrowserTabControl();
-            BrowserTabPage HomePage = await BrowserTabPage.AsyncCreate();
+            BrowserTabControl tabs = new BrowserTabControl(this);
+            BrowserTabPage HomePage = await BrowserTabPage.AsyncCreate(this);
             tabs.Controls.Add(HomePage);
             //tabs.Controls.Add(this.tabPage1);
             tabs.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -66,6 +67,29 @@ namespace Web_Browser
             // Add 'home' BrowserTabPage
             // Add '+' BrowserTabPage
 
+        }
+
+        private void panel1_Resize(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BrowserWindow_Resize(object sender, EventArgs e)
+        {
+            // resize tab Control and children with this
+            Console.WriteLine("Resize event thrown");
+            Console.WriteLine("Width: {0}", Width);
+            Console.WriteLine("Height: {0}", Height);
+
+            // Update the Width and Height fields in the BrowserTabControl object/s
+            /*
+            Control[] tabsArr = Controls.Find("tabControl", false);
+            foreach (BrowserTabControl tabControl in tabsArr)
+            {
+                tabControl.Width = Width;
+                tabControl.Height = Height;
+            }
+            */
         }
     }
 }

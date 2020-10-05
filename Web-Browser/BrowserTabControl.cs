@@ -11,11 +11,16 @@ namespace Web_Browser
 {
     public class BrowserTabControl: TabControl
     {
-        List<BrowserTabPage> _pages;
-        
-        public BrowserTabControl()
-        {
+        private Form _owner;
 
+        public int WindowWidth;
+        public int WindowHeight;
+        
+        public BrowserTabControl(Form owner, ref int width, ref int height)
+        {
+            _owner = owner;
+            WindowHeight = height;
+            WindowWidth = width;
         }
 
         
@@ -26,6 +31,7 @@ namespace Web_Browser
     /// </summary>
     public class BrowserTabPage : TabPage
     {
+        private Form _owner;
         private TabContent Content;
         public static string HomeURL = "http://www.google.com";
 
@@ -38,19 +44,21 @@ namespace Web_Browser
 
         private TextBox UrlInput;
 
-        private Label SourceViewer;
+        private TextBox SourceViewer;
 
-        public static async Task<BrowserTabPage> AsyncCreate()
+        public static async Task<BrowserTabPage> AsyncCreate(Form owner)
         {
-            BrowserTabPage btp = new BrowserTabPage();
+            BrowserTabPage btp = new BrowserTabPage(owner);
             btp.Content = await TabContent.AsyncCreate(HomeURL);
+            //btp.SourceViewer.Text = "Something funky here";
             btp.SourceViewer.Text = btp.Content.HttpCode;
             btp.Text = btp.Content.Title;
             return btp;
         }
 
-        private BrowserTabPage()
+        private BrowserTabPage(Form owner)
         {
+            _owner = owner;
             Back = new Button();
             #region Back Button config
             Back.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -108,7 +116,7 @@ namespace Web_Browser
             #region Go Button config
             Go.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             Go.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            Go.Location = new System.Drawing.Point(960, 2);
+            Go.Location = new System.Drawing.Point(10, 2);
             Go.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             Go.Name = "goBtn";
             Go.Size = new System.Drawing.Size(76, 48);
@@ -123,7 +131,7 @@ namespace Web_Browser
             #region Menu Button config
             Menu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             Menu.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            Menu.Location = new System.Drawing.Point(1041, 2);
+            Menu.Location = new System.Drawing.Point(90, 2);
             Menu.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             Menu.Name = "menuBtn";
             Menu.Size = new System.Drawing.Size(106, 48);
@@ -133,37 +141,46 @@ namespace Web_Browser
             #endregion
             Controls.Add(Menu);
 
+            // TODO: create window resize event to update UrlInput size
             UrlInput = new TextBox();
             #region UrlInput TextBox config
-            UrlInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-| System.Windows.Forms.AnchorStyles.Right)));
             UrlInput.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             UrlInput.Location = new System.Drawing.Point(200, 6);
             UrlInput.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             UrlInput.Name = "URLInput";
-            UrlInput.Size = new System.Drawing.Size(757, 35);
+            UrlInput.Size = new System.Drawing.Size(757, 35);// 757,35
+            double newWidth = _owner.Width * 0.47;
+            Console.WriteLine(_owner.Width);
+            UrlInput.Width = (int) newWidth ;
             UrlInput.TabIndex = 0;
             UrlInput.Text = HomeURL;
             #endregion
             Controls.Add(UrlInput);
 
-            SourceViewer = new Label();
+            // TODO: create window resize event to update Sourceviewer size
+            SourceViewer = new TextBox();
             #region SourceViewer Label config
-            SourceViewer.AutoEllipsis = true;
-            SourceViewer.AutoSize = true;
+            SourceViewer.AutoSize = false;
+            SourceViewer.WordWrap = true;
+            SourceViewer.ReadOnly = true;
+            SourceViewer.Multiline = true;
+            SourceViewer.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             SourceViewer.BackColor = System.Drawing.Color.White;
             SourceViewer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             SourceViewer.Location = new System.Drawing.Point(4, 63);
             SourceViewer.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             SourceViewer.Name = "sourceViewer";
-            SourceViewer.Size = new System.Drawing.Size(2, 31);
+            SourceViewer.Size = new System.Drawing.Size(_owner.Width - 30, _owner.Height - 135);
+            //SourceViewer.MaximumSize = new System.Drawing.Size(_owner.Width - 30, _owner.Height - 10);
             SourceViewer.TabIndex = 9;
             #endregion
             Controls.Add(SourceViewer);
-
-
         }
 
+        private void SourceView_Resize(object sender, EventArgs e)
+        {
+
+        }
 
 
     }
