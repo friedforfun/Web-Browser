@@ -11,37 +11,39 @@ namespace Web_Browser
     /// <summary>
     /// Object storing the state of a tab
     /// </summary>
-    class TabContent
+    class PageContent
     {
-        public string Url => _response.Url;
+        public string Url;
         
         public string Title => _response.Title;
 
         public string HttpCode => _response.HttpSourceCode;
         
-        private TabHistory history;
+        private PageHistory LocalHistory;
         private BrowserResponse _response;
 
-        public static async Task<TabContent> AsyncCreate(string url)
+        public static async Task<PageContent> AsyncCreate(string url)
         {
-            TabContent tc = new TabContent(url);
-            await tc.GetPage(url);
-            return tc;
+            PageContent pc = new PageContent(url);
+            await pc.GetPage();
+            // init LocalHistory
+            PageHistory FirstPage = new PageHistory(pc.Url, pc.Title);
+            pc.LocalHistory = FirstPage;
+            return pc;
         } 
 
-        private TabContent(string url)
-        { 
-            //GetPage(url);
-            history = new TabHistory();
+        private PageContent(string url)
+        {
+            Url = url;
         }
 
         /// <summary>
         /// Update the BrowserResponse object using Async
         /// </summary>
         /// <param name="url">The URL to get the HTTP response from</param>
-        private async Task<BrowserResponse> GetPage(string url)
+        private async Task<BrowserResponse> GetPage()
         {
-            _response = await HttpRequests.Get(url);
+            _response = await HttpRequests.Get(Url);
             return _response;
         }
 
@@ -51,14 +53,15 @@ namespace Web_Browser
         /// <param name="url">The url to use for navigation</param>
         public async void Navigate(string url)
         {
-            await GetPage(url);
-            history.NewPage(Url, Title);
+            Url = url;
+            await GetPage();
+            LocalHistory.NewPage(Url, Title);
         }
 
         /// <summary>
-        /// TabHistory is used for navigating back and forwards within a tab
+        /// PageHistory is used for navigating back and forwards within a tab
         /// </summary>
-        class TabHistory: History
+        class PageHistory: History
         {
             /// <summary>
             /// Points to the current node in the list
@@ -98,9 +101,10 @@ namespace Web_Browser
                 get => current.Back != null;
             }
 
-            public TabHistory()
+            public PageHistory(string url, string title)
             {
-                Head = null;
+                PageEntry firstPage = new PageEntry(url, title);
+                Head = firstPage;
                 current = Head;
             }
 
@@ -111,7 +115,7 @@ namespace Web_Browser
             /// <param name="title">The title of the page</param>
             public void NewPage(string url, string title)
             {
-                TabEntry newPage = new TabEntry(url, title);
+                PageEntry newPage = new PageEntry(url, title);
                 AddEntry(newPage);
             }
 
@@ -143,7 +147,7 @@ namespace Web_Browser
             }
 
 
-            class TabEntry : Entry
+            class PageEntry : Entry
             {
                 private readonly string _url;
                 private readonly string _title;
@@ -157,7 +161,7 @@ namespace Web_Browser
                 public override Entry Back { get => _back; set => _back = value; }
                 public override Entry Forwards { get => _forwards; set => _forwards = value; }
 
-                public TabEntry(string url, string title)
+                public PageEntry(string url, string title)
                 {
                     _url = url;
                     _title = title;
