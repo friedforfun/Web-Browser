@@ -58,9 +58,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BrowserTabControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="History.cs" />
     <Compile Include="PageContent.cs" />
     <Compile Include="HttpRequests.cs" />

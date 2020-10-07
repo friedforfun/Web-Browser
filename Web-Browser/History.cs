@@ -9,7 +9,7 @@ namespace Web_Browser
     /// <summary>
     /// Abstract History class
     /// </summary>
-    abstract class History
+    public abstract class History
     {
         /// <summary>
         /// The head of the History list
@@ -30,11 +30,11 @@ namespace Web_Browser
     /// A Node in the History class.
     /// Each entry has: URL, Access Date, HTML title
     /// </summary>
-    abstract class Entry
+    public abstract class Entry
     {
-        protected abstract string Url { get; }
-        protected abstract string Title { get; }
-        protected abstract DateTime AccessTime { get; }
+        public abstract string Url { get; }
+        public abstract string Title { get; }
+        public abstract DateTime AccessTime { get; }
 
         /// <summary>
         /// The entry chronologically after this Entry

@@ -11,16 +11,18 @@ namespace Web_Browser
     /// <summary>
     /// Object storing the state of a tab
     /// </summary>
-    class PageContent
+    public class PageContent
     {
         public string Url;
         
         public string Title => _response.Title;
 
         public string HttpCode => _response.HttpSourceCode;
-        
-        private PageHistory LocalHistory;
+
+        public PageHistory LocalHistory;
         private BrowserResponse _response;
+
+        public event EventHandler<ContextChangedEventArgs> ContextChanged;
 
         public static async Task<PageContent> AsyncCreate(string url)
         {
@@ -56,17 +58,47 @@ namespace Web_Browser
             Url = url;
             await GetPage();
             LocalHistory.NewPage(Url, Title);
+
+            ContextChangedEventArgs args = new ContextChangedEventArgs();
+            args.Url = Url;
+            args.Title = Title;
+            OnContextChanged(args);
         }
+
+        public void Back()
+        {
+            LocalHistory.StepBack();
+            Navigate(LocalHistory.GetUrl);
+        }
+
+        public void Forwards()
+        {
+            LocalHistory.StepForwards();
+            Navigate(LocalHistory.GetUrl);
+        }
+
+        protected virtual void OnContextChanged(ContextChangedEventArgs e)
+        {
+            EventHandler<ContextChangedEventArgs> handler = ContextChanged;
+            if (handler != null)
+            {
+                handler(this, e);
+            }
+        }
+
 
         /// <summary>
         /// PageHistory is used for navigating back and forwards within a tab
         /// </summary>
-        class PageHistory: History
+        public class PageHistory: History
         {
             /// <summary>
             /// Points to the current node in the list
             /// </summary>
-            private Entry current;
+            private Entry Current;
+
+            public string GetUrl => Current.Url;
+            public string GetTitle => Current.Title;
 
             /// <summary>
             /// Backing field for Head
@@ -81,8 +113,8 @@ namespace Web_Browser
                 set
                 {
                     _head = value;
-                    // Any time head is set to a new value set current to this location
-                    current = value;
+                    // Any time head is set to a new value set Current to this location
+                    Current = value;
                 }
             }
 
@@ -93,19 +125,19 @@ namespace Web_Browser
 
             public bool CanStepForward
             {
-                get => current.Forwards != null;
+                get => Current.Forwards != null;
             }
 
             public bool CanStepBack
             {
-                get => current.Back != null;
+                get => Current.Back != null;
             }
 
             public PageHistory(string url, string title)
             {
                 PageEntry firstPage = new PageEntry(url, title);
                 Head = firstPage;
-                current = Head;
+                Current = Head;
             }
 
             /// <summary>
@@ -120,7 +152,7 @@ namespace Web_Browser
             }
 
             /// <summary>
-            /// Add new entry in list, set head & current to this entry
+            /// Add new entry in list, set head & Current to this entry
             /// </summary>
             /// <param name="e"></param>
             protected override void AddEntry(Entry e)
@@ -128,26 +160,25 @@ namespace Web_Browser
                 e.Back = Head;
                 Head.Forwards = e;
                 Head = e;
+                Current = Head;
             }
 
-            protected void StepBack()
+            public void StepBack()
             {
                 if (CanStepBack)
                 {
-                    current = current.Back;
+                    Current = Current.Back;
                 }
             }
 
-            protected void StepForwards()
+            public void StepForwards()
             {
                 if (CanStepForward)
                 {
-                    current = current.Forwards;
+                    Current = Current.Forwards;
                 }
             }
-
-
-            class PageEntry : Entry
+            protected class PageEntry : Entry
             {
                 private readonly string _url;
                 private readonly string _title;
@@ -155,9 +186,9 @@ namespace Web_Browser
                 private Entry _back;
                 private Entry _forwards;
 
-                protected override string Url => _url;
-                protected override string Title => _title;
-                protected override DateTime AccessTime => _accessTime;
+                public override string Url => _url;
+                public override string Title => _title;
+                public override DateTime AccessTime => _accessTime;
                 public override Entry Back { get => _back; set => _back = value; }
                 public override Entry Forwards { get => _forwards; set => _forwards = value; }
 
@@ -171,5 +202,10 @@ namespace Web_Browser
                 }
             }
         }
+    }
+    public class ContextChangedEventArgs : EventArgs
+    {
+        public string Url;
+        public string Title;
     }
 }

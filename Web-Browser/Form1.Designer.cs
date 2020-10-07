@@ -48,6 +48,7 @@
             this.BackBtn.TabIndex = 2;
             this.BackBtn.Text = "←";
             this.BackBtn.UseVisualStyleBackColor = true;
+            this.BackBtn.Click += new System.EventHandler(this.BackBtn_Click);
             // 
             // ForwardsBtn
             // 
@@ -59,6 +60,7 @@
             this.ForwardsBtn.TabIndex = 3;
             this.ForwardsBtn.Text = "→";
             this.ForwardsBtn.UseVisualStyleBackColor = true;
+            this.ForwardsBtn.Click += new System.EventHandler(this.ForwardsBtn_Click);
             // 
             // HomeBtn
             // 
@@ -70,6 +72,7 @@
             this.HomeBtn.TabIndex = 10;
             this.HomeBtn.Text = "⌂";
             this.HomeBtn.UseVisualStyleBackColor = true;
+            this.HomeBtn.Click += new System.EventHandler(this.HomeBtn_Click);
             // 
             // RefreshBtn
             // 
@@ -81,6 +84,7 @@
             this.RefreshBtn.TabIndex = 1;
             this.RefreshBtn.Text = "⭮";
             this.RefreshBtn.UseVisualStyleBackColor = true;
+            this.RefreshBtn.Click += new System.EventHandler(this.RefreshBtn_Click);
             // 
             // GoBtn
             // 
