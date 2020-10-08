@@ -65,16 +65,37 @@ namespace Web_Browser
             OnContextChanged(args);
         }
 
+        public async void NavigateNoHistory(string url)
+        {
+            Url = url;
+            await GetPage();
+
+            ContextChangedEventArgs args = new ContextChangedEventArgs();
+            args.Url = Url;
+            args.Title = Title;
+            OnContextChanged(args);
+        }
+
+        private async void HistoryNavigate()
+        {
+            Url = LocalHistory.GetUrl;
+            await GetPage();
+            ContextChangedEventArgs args = new ContextChangedEventArgs();
+            args.Url = Url;
+            args.Title = Title;
+            OnContextChanged(args);
+        }
+
         public void Back()
         {
             LocalHistory.StepBack();
-            Navigate(LocalHistory.GetUrl);
+            HistoryNavigate();
         }
 
         public void Forwards()
         {
             LocalHistory.StepForwards();
-            Navigate(LocalHistory.GetUrl);
+            HistoryNavigate();
         }
 
         protected virtual void OnContextChanged(ContextChangedEventArgs e)
@@ -99,6 +120,8 @@ namespace Web_Browser
 
             public string GetUrl => Current.Url;
             public string GetTitle => Current.Title;
+
+            public string test => Current.Back.Forwards.Title;
 
             /// <summary>
             /// Backing field for Head
@@ -157,8 +180,8 @@ namespace Web_Browser
             /// <param name="e"></param>
             protected override void AddEntry(Entry e)
             {
-                e.Back = Head;
                 Head.Forwards = e;
+                e.Back = Head;
                 Head = e;
                 Current = Head;
             }
@@ -168,6 +191,7 @@ namespace Web_Browser
                 if (CanStepBack)
                 {
                     Current = Current.Back;
+
                 }
             }
 
