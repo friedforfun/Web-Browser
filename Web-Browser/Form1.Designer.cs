@@ -38,8 +38,15 @@
             this.SourceViewer = new System.Windows.Forms.TextBox();
             this.MenuPicker = new System.Windows.Forms.MenuStrip();
             this.SetHomePage = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenHistory = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddFavourites = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenFavourites = new System.Windows.Forms.ToolStripMenuItem();
+            this.EditFavourites = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddCustomFavourite = new System.Windows.Forms.ToolStripMenuItem();
+            this.StatusBar = new System.Windows.Forms.Panel();
+            this.StatusCodeLabel = new System.Windows.Forms.Label();
             this.MenuPicker.SuspendLayout();
+            this.StatusBar.SuspendLayout();
             this.SuspendLayout();
             // 
             // BackBtn
@@ -140,7 +147,7 @@
             this.SourceViewer.Name = "SourceViewer";
             this.SourceViewer.ReadOnly = true;
             this.SourceViewer.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.SourceViewer.Size = new System.Drawing.Size(938, 443);
+            this.SourceViewer.Size = new System.Drawing.Size(938, 483);
             this.SourceViewer.TabIndex = 0;
             // 
             // MenuPicker
@@ -150,11 +157,14 @@
             this.MenuPicker.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.MenuPicker.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SetHomePage,
+            this.AddFavourites,
+            this.AddCustomFavourite,
+            this.OpenHistory,
             this.OpenFavourites});
             this.MenuPicker.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
-            this.MenuPicker.Location = new System.Drawing.Point(721, 77);
+            this.MenuPicker.Location = new System.Drawing.Point(701, 77);
             this.MenuPicker.Name = "MenuPicker";
-            this.MenuPicker.Size = new System.Drawing.Size(186, 92);
+            this.MenuPicker.Size = new System.Drawing.Size(212, 151);
             this.MenuPicker.TabIndex = 11;
             this.MenuPicker.Text = "MenuPicker";
             this.MenuPicker.Visible = false;
@@ -162,21 +172,70 @@
             // SetHomePage
             // 
             this.SetHomePage.Name = "SetHomePage";
-            this.SetHomePage.Size = new System.Drawing.Size(179, 29);
+            this.SetHomePage.Size = new System.Drawing.Size(205, 29);
             this.SetHomePage.Text = "Set Home Page";
+            // 
+            // OpenHistory
+            // 
+            this.OpenHistory.Name = "OpenHistory";
+            this.OpenHistory.Size = new System.Drawing.Size(205, 29);
+            this.OpenHistory.Text = "History";
+            // 
+            // AddFavourites
+            // 
+            this.AddFavourites.Name = "AddFavourites";
+            this.AddFavourites.Size = new System.Drawing.Size(205, 29);
+            this.AddFavourites.Text = "Add to Favourites";
+            this.AddFavourites.Click += new System.EventHandler(this.AddFavourites_Click);
             // 
             // OpenFavourites
             // 
+            this.OpenFavourites.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.EditFavourites});
             this.OpenFavourites.Name = "OpenFavourites";
-            this.OpenFavourites.Size = new System.Drawing.Size(179, 29);
+            this.OpenFavourites.Size = new System.Drawing.Size(205, 29);
             this.OpenFavourites.Text = "Favourites";
+            // 
+            // EditFavourites
+            // 
+            this.EditFavourites.Name = "EditFavourites";
+            this.EditFavourites.Size = new System.Drawing.Size(241, 34);
+            this.EditFavourites.Text = "Edit Favourites...";
+            // 
+            // AddCustomFavourite
+            // 
+            this.AddCustomFavourite.Name = "AddCustomFavourite";
+            this.AddCustomFavourite.Size = new System.Drawing.Size(205, 29);
+            this.AddCustomFavourite.Text = "Add Custom Favourite";
+            this.AddCustomFavourite.Click += new System.EventHandler(this.AddCustomFavourite_Click);
+            // 
+            // StatusBar
+            // 
+            this.StatusBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.StatusBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.StatusBar.Controls.Add(this.StatusCodeLabel);
+            this.StatusBar.Location = new System.Drawing.Point(8, 572);
+            this.StatusBar.Name = "StatusBar";
+            this.StatusBar.Size = new System.Drawing.Size(938, 31);
+            this.StatusBar.TabIndex = 12;
+            // 
+            // StatusCodeLabel
+            // 
+            this.StatusCodeLabel.AutoSize = true;
+            this.StatusCodeLabel.Location = new System.Drawing.Point(3, 5);
+            this.StatusCodeLabel.Name = "StatusCodeLabel";
+            this.StatusCodeLabel.Size = new System.Drawing.Size(40, 20);
+            this.StatusCodeLabel.TabIndex = 0;
+            this.StatusCodeLabel.Text = "Test";
             // 
             // BrowserWindow
             // 
             this.AcceptButton = this.GoBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(954, 536);
+            this.ClientSize = new System.Drawing.Size(954, 607);
+            this.Controls.Add(this.StatusBar);
             this.Controls.Add(this.SourceViewer);
             this.Controls.Add(this.UrlInput);
             this.Controls.Add(this.MenuBtn);
@@ -187,13 +246,15 @@
             this.Controls.Add(this.BackBtn);
             this.Controls.Add(this.MenuPicker);
             this.MainMenuStrip = this.MenuPicker;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MinimumSize = new System.Drawing.Size(499, 344);
             this.Name = "BrowserWindow";
             this.Text = "Browser";
             this.Load += new System.EventHandler(this.BrowserWindow_Load);
             this.MenuPicker.ResumeLayout(false);
             this.MenuPicker.PerformLayout();
+            this.StatusBar.ResumeLayout(false);
+            this.StatusBar.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -209,9 +270,15 @@
         public System.Windows.Forms.Button MenuBtn;
         public System.Windows.Forms.TextBox UrlInput;
         public System.Windows.Forms.TextBox SourceViewer;
-        private System.Windows.Forms.MenuStrip MenuPicker;
-        private System.Windows.Forms.ToolStripMenuItem SetHomePage;
-        private System.Windows.Forms.ToolStripMenuItem OpenFavourites;
+        public System.Windows.Forms.MenuStrip MenuPicker;
+        public System.Windows.Forms.ToolStripMenuItem SetHomePage;
+        public System.Windows.Forms.ToolStripMenuItem OpenHistory;
+        public System.Windows.Forms.ToolStripMenuItem AddFavourites;
+        public System.Windows.Forms.ToolStripMenuItem OpenFavourites;
+        public System.Windows.Forms.ToolStripMenuItem EditFavourites;
+        private System.Windows.Forms.ToolStripMenuItem AddCustomFavourite;
+        private System.Windows.Forms.Panel StatusBar;
+        private System.Windows.Forms.Label StatusCodeLabel;
     }
 }
 

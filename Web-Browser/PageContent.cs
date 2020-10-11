@@ -14,6 +14,9 @@ namespace Web_Browser
     public class PageContent
     {
         public string Url;
+
+        public int StatusCode => _response.StatusCode;
+        public string StatusMessage => GetStatusMessage();
         
         public string Title => _response.Title;
 
@@ -107,6 +110,26 @@ namespace Web_Browser
             }
         }
 
+        private string GetStatusMessage()
+        {
+            Console.WriteLine(StatusCode);
+            switch (StatusCode)
+            {
+                case 200:
+                    return "200: Ok";
+                case 400:
+                    return "400: Bad Request";
+                case 403:
+                    return "403: Forbidden";
+                case 404:
+                    return "404: Not Found";
+                default:
+                    return string.Format("{0}: Undefined", StatusCode.ToString());
+
+            }
+
+        }
+
 
         /// <summary>
         /// PageHistory is used for navigating back and forwards within a tab
@@ -116,21 +139,19 @@ namespace Web_Browser
             /// <summary>
             /// Points to the current node in the list
             /// </summary>
-            private Entry Current;
+            private HistoryEntry Current;
 
             public string GetUrl => Current.Url;
             public string GetTitle => Current.Title;
 
-            public string test => Current.Back.Forwards.Title;
-
             /// <summary>
             /// Backing field for Head
             /// </summary>
-            private Entry _head;
+            private HistoryEntry _head;
             /// <summary>
             /// get/set for _head
             /// </summary>
-            protected override Entry Head
+            protected override HistoryEntry Head
             {
                 get => _head;
                 set
@@ -178,7 +199,7 @@ namespace Web_Browser
             /// Add new entry in list, set head & Current to this entry
             /// </summary>
             /// <param name="e"></param>
-            protected override void AddEntry(Entry e)
+            protected override void AddEntry(HistoryEntry e)
             {
                 Head.Forwards = e;
                 e.Back = Head;
@@ -202,19 +223,19 @@ namespace Web_Browser
                     Current = Current.Forwards;
                 }
             }
-            protected class PageEntry : Entry
+            protected class PageEntry : HistoryEntry
             {
                 private readonly string _url;
                 private readonly string _title;
                 private readonly DateTime _accessTime;
-                private Entry _back;
-                private Entry _forwards;
+                private HistoryEntry _back;
+                private HistoryEntry _forwards;
 
                 public override string Url => _url;
                 public override string Title => _title;
                 public override DateTime AccessTime => _accessTime;
-                public override Entry Back { get => _back; set => _back = value; }
-                public override Entry Forwards { get => _forwards; set => _forwards = value; }
+                public override HistoryEntry Back { get => _back; set => _back = value; }
+                public override HistoryEntry Forwards { get => _forwards; set => _forwards = value; }
 
                 public PageEntry(string url, string title)
                 {

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Net.Http;
+
 using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Parser;
@@ -31,6 +32,11 @@ namespace Web_Browser
         public static async Task<BrowserResponse> Get(string uri)
         {
             // perform some validation on url here
+            if (!uri.StartsWith("http://www.") | !uri.StartsWith("https://www."))
+            {
+                // fix uri string
+            }
+
             HttpResponseMessage httpres = await client.GetAsync(uri);
             return await BrowserResponse.CreateAsync(httpres);
         }
@@ -45,7 +51,7 @@ namespace Web_Browser
         private string _source;
         public string Url { get => _url; }
         private string _url;
-        public int StatusCode { get; }
+        public int StatusCode { get => _statusCode; }
         private int _statusCode;
 
         private IDocument _document;
@@ -53,28 +59,28 @@ namespace Web_Browser
 
         public static async Task<BrowserResponse> CreateAsync(HttpResponseMessage message)
         {
-            BrowserResponse br = new BrowserResponse(message);
-            await br.GetContent(message.Content);
+            BrowserResponse br = new BrowserResponse();
+            br._statusCode = await br.GetContent(message);
             return br;
         }
 
-        private BrowserResponse(HttpResponseMessage message)
+        private BrowserResponse()
         {
-            _statusCode = (int)message.StatusCode;
+            
         }
 
-        private async Task<int> GetContent(HttpContent content)
+        private async Task<int> GetContent(HttpResponseMessage message)
         {
             IConfiguration config = Configuration.Default;
             IBrowsingContext context = BrowsingContext.New(config);
 
-            _rawContent = await content.ReadAsStringAsync();
+            _rawContent = await message.Content.ReadAsStringAsync();
             _document = await context.OpenAsync(req => req.Content(_rawContent));
             _title = _document.Title;
             _url = _document.Url;
             _source = _document.Source.Text;
-
-            return -1;
+            
+            return (int)message.StatusCode;
         }
     }
 

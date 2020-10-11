@@ -15,7 +15,6 @@ namespace Web_Browser
     public partial class BrowserWindow : Form
     {
         private PageContent content;
-        private static string HomeUrl = "http://www.google.com";
 
         public BrowserWindow()
         {
@@ -26,12 +25,17 @@ namespace Web_Browser
 
         private async void BrowserWindow_Load(object sender, EventArgs e)
         {
-            content = await PageContent.AsyncCreate(HomeUrl);
+            content = await PageContent.AsyncCreate(Favourites.HomeUrl);
             content.ContextChanged += content_OnContextChanged;
             SourceViewer.Text = content.HttpCode;
             UrlInput.Text = content.Url;
             Text = content.Title;
+            StatusCodeLabel.Text = content.StatusMessage;
             SetStateForwardsBack();
+
+            Favourites.FavouriteChanged += Favourites_Changed;
+
+            // load favourites
 
         }
         
@@ -40,14 +44,45 @@ namespace Web_Browser
             UrlInput.Text = e.Url;
             Text = e.Title;
             SourceViewer.Text = content.HttpCode;
+            StatusCodeLabel.Text = content.StatusMessage;
             SetStateForwardsBack();
+        }
+
+        private void Favourites_Changed(object sender, FavouritesChangedArgs e)
+        {
+            ToolStripDropDown dropdown = OpenFavourites.DropDown;
+            switch (e.AddRemUpd)
+            {
+                case ARU.Added:
+                    ToolStripMenuItem nextItem = new ToolStripMenuItem(e.EntryKey);
+                    nextItem.Name = e.EntryKey;
+                    dropdown.Items.Add(nextItem);
+                    break;
+
+                case ARU.Removed:
+                    dropdown.Items.RemoveByKey(e.EntryKey);
+                    break;
+
+                case ARU.Updated:
+                    dropdown.Items.RemoveByKey(e.EntryKey);
+                    ToolStripMenuItem updatedItem = new ToolStripMenuItem(e.EntryKey);
+                    updatedItem.Name = e.EntryKey;
+                    dropdown.Items.Add(updatedItem);
+                    break;
+            }
         }
 
         private void GoBtn_Click(object sender, EventArgs e)
         {
             // call navigate on PageContent with URL input as arg
             string url = UrlInput.Text;
-            content.Navigate(url);
+            if (url == content.Url)
+            {
+                content.NavigateNoHistory(url);
+            } else
+            {
+                content.Navigate(url);
+            }
             //Console.WriteLine("THis: {0}", content.LocalHistory.test);
         }
 
@@ -68,12 +103,12 @@ namespace Web_Browser
 
         private void HomeBtn_Click(object sender, EventArgs e)
         {
-            if (content.Url != HomeUrl)
+            if (content.Url != Favourites.HomeUrl)
             {
-                content.Navigate(HomeUrl);
+                content.Navigate(Favourites.HomeUrl);
             } else
             {
-                content.NavigateNoHistory(HomeUrl);
+                content.NavigateNoHistory(Favourites.HomeUrl);
             }
             
         }
@@ -101,6 +136,17 @@ namespace Web_Browser
         private void MenuBtn_Click(object sender, EventArgs e)
         {
             MenuPicker.Visible = MenuPicker.Visible ? false : true;
+        }
+
+        private void AddFavourites_Click(object sender, EventArgs e)
+        {
+            Favourites.AddEntry(content.Url, content.Title);
+        }
+
+        private void AddCustomFavourite_Click(object sender, EventArgs e)
+        {
+           FavouritesDialogue CustomFavourite = new FavouritesDialogue(content.Title, content.Url);
+           CustomFavourite.Show();
         }
     }
 }
