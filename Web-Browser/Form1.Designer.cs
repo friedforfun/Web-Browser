@@ -38,13 +38,15 @@
             this.SourceViewer = new System.Windows.Forms.TextBox();
             this.MenuPicker = new System.Windows.Forms.MenuStrip();
             this.SetHomePage = new System.Windows.Forms.ToolStripMenuItem();
-            this.OpenHistory = new System.Windows.Forms.ToolStripMenuItem();
             this.AddFavourites = new System.Windows.Forms.ToolStripMenuItem();
+            this.AddCustomFavourite = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenHistory = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenFavourites = new System.Windows.Forms.ToolStripMenuItem();
             this.EditFavourites = new System.Windows.Forms.ToolStripMenuItem();
-            this.AddCustomFavourite = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusBar = new System.Windows.Forms.Panel();
             this.StatusCodeLabel = new System.Windows.Forms.Label();
+            this.Renderer = new System.Windows.Forms.WebBrowser();
+            this.RenderToggle = new System.Windows.Forms.CheckBox();
             this.MenuPicker.SuspendLayout();
             this.StatusBar.SuspendLayout();
             this.SuspendLayout();
@@ -154,6 +156,7 @@
             // 
             this.MenuPicker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.MenuPicker.Dock = System.Windows.Forms.DockStyle.None;
+            this.MenuPicker.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.MenuPicker.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.MenuPicker.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SetHomePage,
@@ -175,18 +178,25 @@
             this.SetHomePage.Size = new System.Drawing.Size(205, 29);
             this.SetHomePage.Text = "Set Home Page";
             // 
-            // OpenHistory
-            // 
-            this.OpenHistory.Name = "OpenHistory";
-            this.OpenHistory.Size = new System.Drawing.Size(205, 29);
-            this.OpenHistory.Text = "History";
-            // 
             // AddFavourites
             // 
             this.AddFavourites.Name = "AddFavourites";
             this.AddFavourites.Size = new System.Drawing.Size(205, 29);
             this.AddFavourites.Text = "Add to Favourites";
             this.AddFavourites.Click += new System.EventHandler(this.AddFavourites_Click);
+            // 
+            // AddCustomFavourite
+            // 
+            this.AddCustomFavourite.Name = "AddCustomFavourite";
+            this.AddCustomFavourite.Size = new System.Drawing.Size(205, 29);
+            this.AddCustomFavourite.Text = "Add Custom Favourite";
+            this.AddCustomFavourite.Click += new System.EventHandler(this.AddCustomFavourite_Click);
+            // 
+            // OpenHistory
+            // 
+            this.OpenHistory.Name = "OpenHistory";
+            this.OpenHistory.Size = new System.Drawing.Size(205, 29);
+            this.OpenHistory.Text = "History";
             // 
             // OpenFavourites
             // 
@@ -202,18 +212,12 @@
             this.EditFavourites.Size = new System.Drawing.Size(241, 34);
             this.EditFavourites.Text = "Edit Favourites...";
             // 
-            // AddCustomFavourite
-            // 
-            this.AddCustomFavourite.Name = "AddCustomFavourite";
-            this.AddCustomFavourite.Size = new System.Drawing.Size(205, 29);
-            this.AddCustomFavourite.Text = "Add Custom Favourite";
-            this.AddCustomFavourite.Click += new System.EventHandler(this.AddCustomFavourite_Click);
-            // 
             // StatusBar
             // 
             this.StatusBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.StatusBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.StatusBar.Controls.Add(this.RenderToggle);
             this.StatusBar.Controls.Add(this.StatusCodeLabel);
             this.StatusBar.Location = new System.Drawing.Point(8, 572);
             this.StatusBar.Name = "StatusBar";
@@ -229,12 +233,32 @@
             this.StatusCodeLabel.TabIndex = 0;
             this.StatusCodeLabel.Text = "Test";
             // 
+            // Renderer
+            // 
+            this.Renderer.Location = new System.Drawing.Point(8, 86);
+            this.Renderer.MinimumSize = new System.Drawing.Size(20, 20);
+            this.Renderer.Name = "Renderer";
+            this.Renderer.Size = new System.Drawing.Size(938, 483);
+            this.Renderer.TabIndex = 13;
+            this.Renderer.Visible = false;
+            // 
+            // RenderToggle
+            // 
+            this.RenderToggle.AutoSize = true;
+            this.RenderToggle.Location = new System.Drawing.Point(820, 1);
+            this.RenderToggle.Name = "RenderToggle";
+            this.RenderToggle.Size = new System.Drawing.Size(129, 24);
+            this.RenderToggle.TabIndex = 1;
+            this.RenderToggle.Text = "Render Page";
+            this.RenderToggle.UseVisualStyleBackColor = true;
+            // 
             // BrowserWindow
             // 
             this.AcceptButton = this.GoBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(954, 607);
+            this.Controls.Add(this.Renderer);
             this.Controls.Add(this.StatusBar);
             this.Controls.Add(this.SourceViewer);
             this.Controls.Add(this.UrlInput);
@@ -279,6 +303,8 @@
         private System.Windows.Forms.ToolStripMenuItem AddCustomFavourite;
         private System.Windows.Forms.Panel StatusBar;
         private System.Windows.Forms.Label StatusCodeLabel;
+        private System.Windows.Forms.CheckBox RenderToggle;
+        private System.Windows.Forms.WebBrowser Renderer;
     }
 }
 

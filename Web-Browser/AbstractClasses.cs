@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Web_Browser
 {
     /// <summary>
-    /// Abstract History class
+    /// Abstract History navigation class for back/forwards buttons
     /// </summary>
-    public abstract class History
+    public abstract class HistoryNav
     {
         /// <summary>
         /// The head of the History list

@@ -15,28 +15,29 @@ namespace Web_Browser
     public partial class BrowserWindow : Form
     {
         private PageContent content;
+        private Favourites favourites;
+        private History history;
 
         public BrowserWindow()
         {
             InitializeComponent();
             MenuPicker.BringToFront();
+            favourites = Favourites.Instance;
+            history = History.Instance;
+            content.ContextChanged += content_OnContextChanged;
+            favourites.EntryChanged += Favourites_Changed;
+            history.EntryChanged += History_Changed;
         }
 
 
         private async void BrowserWindow_Load(object sender, EventArgs e)
         {
-            content = await PageContent.AsyncCreate(Favourites.HomeUrl);
-            content.ContextChanged += content_OnContextChanged;
+            content = await PageContent.AsyncCreate(favourites.HomeUrl);
             SourceViewer.Text = content.HttpCode;
             UrlInput.Text = content.Url;
             Text = content.Title;
             StatusCodeLabel.Text = content.StatusMessage;
             SetStateForwardsBack();
-
-            Favourites.FavouriteChanged += Favourites_Changed;
-
-            // load favourites
-
         }
         
         private void content_OnContextChanged(object sender, ContextChangedEventArgs e)
@@ -48,7 +49,7 @@ namespace Web_Browser
             SetStateForwardsBack();
         }
 
-        private void Favourites_Changed(object sender, FavouritesChangedArgs e)
+        private void Favourites_Changed(object sender, EntryRecordChanged e)
         {
             ToolStripDropDown dropdown = OpenFavourites.DropDown;
             switch (e.AddRemUpd)
@@ -70,6 +71,11 @@ namespace Web_Browser
                     dropdown.Items.Add(updatedItem);
                     break;
             }
+        }
+
+        private void History_Changed(object sender, EntryRecordChanged e)
+        {
+
         }
 
         private void GoBtn_Click(object sender, EventArgs e)
@@ -140,7 +146,7 @@ namespace Web_Browser
 
         private void AddFavourites_Click(object sender, EventArgs e)
         {
-            Favourites.AddEntry(content.Url, content.Title);
+            favourites.AddEntry(content.Url, content.Title);
         }
 
         private void AddCustomFavourite_Click(object sender, EventArgs e)

@@ -134,7 +134,7 @@ namespace Web_Browser
         /// <summary>
         /// PageHistory is used for navigating back and forwards within a tab
         /// </summary>
-        public class PageHistory: History
+        public class PageHistory: HistoryNav
         {
             /// <summary>
             /// Points to the current node in the list

@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EntryRecord.cs" />
     <Compile Include="Favourites.cs" />
     <Compile Include="AbstractClasses.cs" />
     <Compile Include="FavouritesDialogue.cs">
@@ -66,6 +67,7 @@
     <Compile Include="FavouritesDialogue.Designer.cs">
       <DependentUpon>FavouritesDialogue.cs</DependentUpon>
     </Compile>
+    <Compile Include="History.cs" />
     <Compile Include="PageContent.cs" />
     <Compile Include="HttpRequests.cs" />
     <Compile Include="Form1.cs">
