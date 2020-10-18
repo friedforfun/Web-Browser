@@ -24,7 +24,6 @@ namespace Web_Browser
             MenuPicker.BringToFront();
             favourites = Favourites.Instance;
             history = History.Instance;
-            content.ContextChanged += content_OnContextChanged;
             favourites.EntryChanged += Favourites_Changed;
             history.EntryChanged += History_Changed;
         }
@@ -32,12 +31,16 @@ namespace Web_Browser
 
         private async void BrowserWindow_Load(object sender, EventArgs e)
         {
-            content = await PageContent.AsyncCreate(favourites.HomeUrl);
+            content = await PageContent.AsyncCreate(favourites.HomeUrl, history);
+            content.ContextChanged += content_OnContextChanged;
             SourceViewer.Text = content.HttpCode;
             UrlInput.Text = content.Url;
             Text = content.Title;
             StatusCodeLabel.Text = content.StatusMessage;
             SetStateForwardsBack();
+
+            Persistance p = new Persistance("example");
+            p.Example();
         }
         
         private void content_OnContextChanged(object sender, ContextChangedEventArgs e)
@@ -49,34 +52,55 @@ namespace Web_Browser
             SetStateForwardsBack();
         }
 
+        /// <summary>
+        /// When favourites changed event gets thrown, this method updates the favourites collection in the gui
+        /// </summary>
+        /// <param name="e">EntryRecordChanged event parameter, indicates what kind of event got thrown & updates the list accordingly</param>
         private void Favourites_Changed(object sender, EntryRecordChanged e)
         {
-            ToolStripDropDown dropdown = OpenFavourites.DropDown;
+            ToolStripDropDown favDropdown = OpenFavourites.DropDown;
+            Update_History_Favourites_Menu(favDropdown, e);
+        }
+
+        /// <summary>
+        /// When history changed event gets thrown, this method updates the history collection in the gui
+        /// </summary>
+
+        /// <param name="e">EntryRecordChanged event parameter, indicates what kind of event got thrown & updates the list accordingly</param>
+        private void History_Changed(object sender, EntryRecordChanged e)
+        {
+            ToolStripDropDown histDropdown = OpenHistory.DropDown;
+            Update_History_Favourites_Menu(histDropdown, e);
+        }
+
+        /// <summary>
+        /// Handles the duplicate logic between updating History/Favourites in gui
+        /// </summary>
+        /// <param name="dropDown">The dropdown object from the ToolStripMenuItem that uses this collection</param>
+        /// <param name="e">The event args, to determine gui update behaviour</param>
+        private void Update_History_Favourites_Menu(ToolStripDropDown dropDown, EntryRecordChanged e)
+        {
             switch (e.AddRemUpd)
             {
                 case ARU.Added:
                     ToolStripMenuItem nextItem = new ToolStripMenuItem(e.EntryKey);
                     nextItem.Name = e.EntryKey;
-                    dropdown.Items.Add(nextItem);
+                    dropDown.Items.Add(nextItem);
                     break;
 
                 case ARU.Removed:
-                    dropdown.Items.RemoveByKey(e.EntryKey);
+                    dropDown.Items.RemoveByKey(e.EntryKey);
                     break;
 
                 case ARU.Updated:
-                    dropdown.Items.RemoveByKey(e.EntryKey);
+                    dropDown.Items.RemoveByKey(e.EntryKey);
                     ToolStripMenuItem updatedItem = new ToolStripMenuItem(e.EntryKey);
                     updatedItem.Name = e.EntryKey;
-                    dropdown.Items.Add(updatedItem);
+                    dropDown.Items.Add(updatedItem);
                     break;
             }
         }
 
-        private void History_Changed(object sender, EntryRecordChanged e)
-        {
-
-        }
 
         private void GoBtn_Click(object sender, EventArgs e)
         {
@@ -109,12 +133,12 @@ namespace Web_Browser
 
         private void HomeBtn_Click(object sender, EventArgs e)
         {
-            if (content.Url != Favourites.HomeUrl)
+            if (content.Url != favourites.HomeUrl)
             {
-                content.Navigate(Favourites.HomeUrl);
+                content.Navigate(favourites.HomeUrl);
             } else
             {
-                content.NavigateNoHistory(Favourites.HomeUrl);
+                content.NavigateNoHistory(favourites.HomeUrl);
             }
             
         }
@@ -151,7 +175,7 @@ namespace Web_Browser
 
         private void AddCustomFavourite_Click(object sender, EventArgs e)
         {
-           FavouritesDialogue CustomFavourite = new FavouritesDialogue(content.Title, content.Url);
+           FavouritesDialogue CustomFavourite = new FavouritesDialogue(content.Title, content.Url, favourites);
            CustomFavourite.Show();
         }
     }

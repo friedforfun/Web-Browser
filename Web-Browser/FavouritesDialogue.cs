@@ -12,16 +12,18 @@ namespace Web_Browser
 {
     public partial class FavouritesDialogue : Form
     {
-        public FavouritesDialogue(string title, string url)
+        Favourites fav;
+        public FavouritesDialogue(string title, string url, Favourites favourites)
         {
             InitializeComponent();
             TitleTextBox.Text = title;
             UrlTextBox.Text = url;
+            fav = favourites;
         }
 
         private void OkBtn_Click(object sender, EventArgs e)
         {
-            Favourites.AddEntry(UrlTextBox.Text, TitleTextBox.Text);
+            fav.AddEntry(UrlTextBox.Text, TitleTextBox.Text);
             Close();
         }
 

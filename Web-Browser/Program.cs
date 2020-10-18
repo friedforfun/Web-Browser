@@ -14,6 +14,7 @@ namespace Web_Browser
         [STAThread]
         static void Main()
         {
+            Console.WriteLine(Application.StartupPath);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new BrowserWindow());

@@ -23,20 +23,32 @@ namespace Web_Browser
         public string HttpCode => _response.HttpSourceCode;
 
         public PageHistory LocalHistory;
+        public History SingletonHistory;
         private BrowserResponse _response;
 
         public event EventHandler<ContextChangedEventArgs> ContextChanged;
 
-        public static async Task<PageContent> AsyncCreate(string url)
+        /// <summary>
+        /// Asyncronously instantiate a PageContent object, replaces constructor
+        /// </summary>
+        /// <param name="url">The URL of the first page to open on instantiation</param>
+        /// <param name="singletonHistory">Reference to the history object to manage updating the list</param>
+        /// <returns></returns>
+        public static async Task<PageContent> AsyncCreate(string url, History singletonHistory)
         {
             PageContent pc = new PageContent(url);
             await pc.GetPage();
             // init LocalHistory
             PageHistory FirstPage = new PageHistory(pc.Url, pc.Title);
             pc.LocalHistory = FirstPage;
+            pc.SingletonHistory = singletonHistory;
             return pc;
         } 
 
+        /// <summary>
+        /// Constructor of PageContent, use AsyncCreate() instead
+        /// </summary>
+        /// <param name="url">The URL of the first page to load</param>
         private PageContent(string url)
         {
             Url = url;
@@ -53,7 +65,7 @@ namespace Web_Browser
         }
 
         /// <summary>
-        /// Navigate to a new page
+        /// Navigate to a new page, add the new page to history
         /// </summary>
         /// <param name="url">The url to use for navigation</param>
         public async void Navigate(string url)
@@ -61,6 +73,7 @@ namespace Web_Browser
             Url = url;
             await GetPage();
             LocalHistory.NewPage(Url, Title);
+            SingletonHistory.AddEntry(Url, Title);
 
             ContextChangedEventArgs args = new ContextChangedEventArgs();
             args.Url = Url;
@@ -68,6 +81,10 @@ namespace Web_Browser
             OnContextChanged(args);
         }
 
+        /// <summary>
+        /// Navigate to a page without adding to history
+        /// </summary>
+        /// <param name="url">The url to use for navigation</param>
         public async void NavigateNoHistory(string url)
         {
             Url = url;
@@ -79,6 +96,9 @@ namespace Web_Browser
             OnContextChanged(args);
         }
 
+        /// <summary>
+        /// Internal navigation method when using back and forward buttons, works the same as NavigateNoHistory but doesnt take a param
+        /// </summary>
         private async void HistoryNavigate()
         {
             Url = LocalHistory.GetUrl;
@@ -89,18 +109,28 @@ namespace Web_Browser
             OnContextChanged(args);
         }
 
+        /// <summary>
+        /// Navigate from Back button press
+        /// </summary>
         public void Back()
         {
             LocalHistory.StepBack();
             HistoryNavigate();
         }
 
+        /// <summary>
+        /// Navigate from Forward button press
+        /// </summary>
         public void Forwards()
         {
             LocalHistory.StepForwards();
             HistoryNavigate();
         }
 
+        /// <summary>
+        /// On context changed event call
+        /// </summary>
+        /// <param name="e">The args to provide on context change</param>
         protected virtual void OnContextChanged(ContextChangedEventArgs e)
         {
             EventHandler<ContextChangedEventArgs> handler = ContextChanged;
@@ -110,6 +140,10 @@ namespace Web_Browser
             }
         }
 
+        /// <summary>
+        /// Select string corresponding to HTTP status code
+        /// </summary>
+        /// <returns>a string to display the HTTP statuscode message</returns>
         private string GetStatusMessage()
         {
             Console.WriteLine(StatusCode);
@@ -132,7 +166,7 @@ namespace Web_Browser
 
 
         /// <summary>
-        /// PageHistory is used for navigating back and forwards within a tab
+        /// PageHistory is used for navigating back and forwards within a window
         /// </summary>
         public class PageHistory: HistoryNav
         {

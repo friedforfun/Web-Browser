@@ -44,9 +44,9 @@
             this.OpenFavourites = new System.Windows.Forms.ToolStripMenuItem();
             this.EditFavourites = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusBar = new System.Windows.Forms.Panel();
+            this.RenderToggle = new System.Windows.Forms.CheckBox();
             this.StatusCodeLabel = new System.Windows.Forms.Label();
             this.Renderer = new System.Windows.Forms.WebBrowser();
-            this.RenderToggle = new System.Windows.Forms.CheckBox();
             this.MenuPicker.SuspendLayout();
             this.StatusBar.SuspendLayout();
             this.SuspendLayout();
@@ -224,6 +224,17 @@
             this.StatusBar.Size = new System.Drawing.Size(938, 31);
             this.StatusBar.TabIndex = 12;
             // 
+            // RenderToggle
+            // 
+            this.RenderToggle.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.RenderToggle.AutoSize = true;
+            this.RenderToggle.Location = new System.Drawing.Point(804, 1);
+            this.RenderToggle.Name = "RenderToggle";
+            this.RenderToggle.Size = new System.Drawing.Size(129, 24);
+            this.RenderToggle.TabIndex = 1;
+            this.RenderToggle.Text = "Render Page";
+            this.RenderToggle.UseVisualStyleBackColor = true;
+            // 
             // StatusCodeLabel
             // 
             this.StatusCodeLabel.AutoSize = true;
@@ -241,16 +252,6 @@
             this.Renderer.Size = new System.Drawing.Size(938, 483);
             this.Renderer.TabIndex = 13;
             this.Renderer.Visible = false;
-            // 
-            // RenderToggle
-            // 
-            this.RenderToggle.AutoSize = true;
-            this.RenderToggle.Location = new System.Drawing.Point(820, 1);
-            this.RenderToggle.Name = "RenderToggle";
-            this.RenderToggle.Size = new System.Drawing.Size(129, 24);
-            this.RenderToggle.TabIndex = 1;
-            this.RenderToggle.Text = "Render Page";
-            this.RenderToggle.UseVisualStyleBackColor = true;
             // 
             // BrowserWindow
             // 

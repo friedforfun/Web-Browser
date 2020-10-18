@@ -34,9 +34,17 @@ namespace Web_Browser
             EntryElement nextEntry = new EntryElement(url, title);
             try
             {
-                EntryCollection.Add(title, nextEntry);
+                if (title != "")
+                {
+                    EntryCollection.Add(title, nextEntry);
+                    OnEntryChanged(title, ARU.Added);
+                } else
+                {
+                    EntryCollection.Add(url, nextEntry);
+                    OnEntryChanged(url, ARU.Added);
+                }
                 // Setup & trigger event
-                OnEntryChanged(title, ARU.Added);
+
             }
             catch (ArgumentException)
             {
