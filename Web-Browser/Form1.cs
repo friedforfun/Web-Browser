@@ -38,9 +38,6 @@ namespace Web_Browser
             Text = content.Title;
             StatusCodeLabel.Text = content.StatusMessage;
             SetStateForwardsBack();
-
-            Persistance p = new Persistance("example");
-            p.Example();
         }
         
         private void content_OnContextChanged(object sender, ContextChangedEventArgs e)

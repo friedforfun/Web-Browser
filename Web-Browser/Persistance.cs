@@ -7,25 +7,30 @@ using System.IO;
 using System.Xml;
 using System.Xml.Schema;
 using System.Windows.Forms;
+using System.Runtime.Serialization;
+using System.Xml.Serialization;
+using System.Reflection;
 
 namespace Web_Browser
 {
-    class Persistance
+    class Persistance <T>
     {
         private string filename;
         private string rootPath;
+        private string path => string.Format("{0}\\{1}.xml", rootPath, filename);
+        private FileStream xmlFile;
 
         public Persistance(string name)
         {
             rootPath = Application.StartupPath;
-            this.filename = name;
+            filename = name;
         }
 
         public void Example()
         {
             try
             {
-                XmlTextReader reader = new XmlTextReader(getPath());
+                XmlTextReader reader = new XmlTextReader(path);
                 XmlSchema schema = XmlSchema.Read(reader, ValidationCallback);
                 schema.Write(Console.Out);
                 FileStream file = new FileStream("new.xsd", FileMode.Create, FileAccess.ReadWrite);
@@ -39,11 +44,44 @@ namespace Web_Browser
             }
         }
 
-        private string getPath()
+        private void openWriteFileStream(FileMode mode)
         {
+            //Mode enum: https://docs.microsoft.com/en-us/dotnet/api/system.io.filemode?view=netcore-3.1
+            try
+            {
+                
+            }
+            catch(Exception e)
+            {
 
-            return string.Format("{0}\\{1}.xsd", rootPath, filename);
+            }
+            
         }
+
+        public void SerizalizeCollection(SortedList<string, T> collection)
+        {
+            try
+            {
+                using(xmlFile = new FileStream(path, FileMode.Create, FileAccess.Write))
+                {
+                    var serializer = new DataContractSerializer(typeof(SortedList<string, T>));
+                    using (XmlTextWriter xwriter = new XmlTextWriter(xmlFile, new UTF8Encoding()))
+                    {
+                        xwriter.Formatting = Formatting.Indented;
+                        serializer.WriteObject(xwriter, collection);
+                        Console.WriteLine("Should be written");
+                        xwriter.Flush();
+                    }
+                        
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+        }
+
 
         private static void ValidationCallback(object sender, ValidationEventArgs args)
         {

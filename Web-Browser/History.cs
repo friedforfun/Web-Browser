@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,8 +14,10 @@ namespace Web_Browser
 
         public static History Instance { get { return singleton.Value; } }
 
-        private History()
+        private History(): base("history")
         {
+            
         }
+
     }
 }

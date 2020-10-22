@@ -4,25 +4,48 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace Web_Browser
 {
     /// <summary>
-    /// Interface used to write an Entry sorted list to XML
+    /// Interface used to write an Entry of sorted list type to XML by converting to array
     /// </summary>
     /// <typeparam name="T">Type implementing the Entry class</typeparam>
-    interface IWriteXML<T> where T : Entry
+    interface ICanWriteXML<T> where T : Entry
     {
-        SortedList<string, T> GetList();
+        T[] GetList();
+       // void SetList(T[] list);
     }
+
     /// <summary>
     /// An entry record used for History and Favourites collection
     /// </summary>
-    public class EntryRecord : IWriteXML<EntryElement>
+    
+    [DataContract]
+    public class EntryRecord : ICanWriteXML<EntryElement>
     {
+        [XmlIgnore]
         private SortedList<string, EntryElement> EntryCollection = new SortedList<string, EntryElement>();
 
+        [DataMember]
+        public EntryElement[] serialiser
+        {
+            get => GetList();
+            set => SetList(value);
+        }
+
         public event EventHandler<EntryRecordChanged> EntryChanged = delegate { };
+
+        [XmlIgnore]
+        private Persistance<EntryElement> persistanceManager;
+
+        public EntryRecord(string filename)
+        {
+            persistanceManager = new Persistance<EntryElement>(filename);
+        }
 
         /// <summary>
         /// Add a new entry to the collection
@@ -54,10 +77,28 @@ namespace Web_Browser
         }
 
 
-        public SortedList<string, EntryElement> GetList()
+        public EntryElement[] GetList()
         {
-            return EntryCollection;
+            EntryElement[] list = new EntryElement[EntryCollection.Count];
+            int i = 0;
+            foreach (string key in EntryCollection.Keys)
+            {
+                EntryElement ele = EntryCollection[key];
+                list[i] = ele;
+                i++;
+            }
+            return list;
         }
+
+        public void SetList(EntryElement[] list)
+        {
+            EntryCollection.Clear();
+            for (int i = 0; i < list.Length; i++)
+            {
+                EntryCollection.Add(list[i].Title, list[i]);
+            }
+        }
+
 
         /// <summary>
         /// Remove the entry from the list by key
@@ -78,7 +119,7 @@ namespace Web_Browser
             OnEntryChanged(title, ARU.Removed);
         }
 
-        public IList<string> GetTitle()
+        public IList<string> GetTitles()
         {
             return EntryCollection.Keys;
         }
@@ -138,23 +179,47 @@ namespace Web_Browser
             EventHandler<EntryRecordChanged> handler = EntryChanged;
             // handler never null so no need to check if null
             handler(null, updatedEntry);
+            WriteSerializedCollection();
         }
-    }
 
+
+        public void WriteSerializedCollection()
+        {
+            persistanceManager.SerizalizeCollection(EntryCollection);
+        }
+
+    }
+    [KnownType(typeof(EntryElement[]))]
+    [DataContract]
     public class EntryElement : Entry
     {
 
         // when editing instantiate a new favourite and delete this one
-        private readonly string _url;
-        private readonly string _title;
-        private readonly DateTime _accessTime;
-
-        public override string Url => _url;
-
-        public override string Title => _title;
-
-        public override DateTime AccessTime => _accessTime;
-
+        [DataMember]
+        private string _url;
+        [DataMember]
+        private string _title;
+        [DataMember]
+        private DateTime _accessTime;
+        
+        [DataMember]
+        public override string Url 
+        {
+            get => _url;
+            set => _url = value;
+        }
+        [DataMember]
+        public override string Title
+        {
+            get => _title;
+            set => _title = value;
+        }
+        [DataMember]
+        public override DateTime AccessTime
+        {
+            get => _accessTime;
+            set => _accessTime = value;
+        }
         public EntryElement(string url, string title)
         {
             _url = url;

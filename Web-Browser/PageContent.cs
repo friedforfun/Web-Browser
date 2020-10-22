@@ -259,15 +259,27 @@ namespace Web_Browser
             }
             protected class PageEntry : HistoryEntry
             {
-                private readonly string _url;
-                private readonly string _title;
-                private readonly DateTime _accessTime;
+                private string _url;
+                private string _title;
+                private DateTime _accessTime;
                 private HistoryEntry _back;
                 private HistoryEntry _forwards;
 
-                public override string Url => _url;
-                public override string Title => _title;
-                public override DateTime AccessTime => _accessTime;
+                public override string Url
+                {
+                    get => _url;
+                    set => _url = value;
+                }
+                public override string Title
+                {
+                    get => _title;
+                    set => _title = value;
+                }
+                public override DateTime AccessTime
+                {
+                    get => _accessTime;
+                    set => _accessTime = value;
+                }
                 public override HistoryEntry Back { get => _back; set => _back = value; }
                 public override HistoryEntry Forwards { get => _forwards; set => _forwards = value; }
 

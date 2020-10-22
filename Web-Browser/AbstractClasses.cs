@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,11 +42,16 @@ namespace Web_Browser
     /// A Node in History/Favourites .
     /// Each entry has: URL, Access Date, HTML title
     /// </summary>
+    [KnownType(typeof(EntryElement))]
+    [DataContract]
     public abstract class Entry
     {
-        public abstract string Url { get; }
-        public abstract string Title { get; }
-        public abstract DateTime AccessTime { get; }
+        [DataMember]
+        public abstract string Url { get; set;  }
+        [DataMember]
+        public abstract string Title { get; set; }
+        [DataMember]
+        public abstract DateTime AccessTime { get; set; }
 
 
     }
