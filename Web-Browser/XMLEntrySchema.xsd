@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="XMLEntrySchema"
+    targetNamespace="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    xmlns="https://www.w3schools.com"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+  <xs:element name="entry">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="title" type="xs:string"/>
+        <xs:element name="url" type="xs:string"/>
+        <xs:element name="accesstime" type="xs:dateTime"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

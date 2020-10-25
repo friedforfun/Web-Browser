@@ -26,13 +26,13 @@ namespace Web_Browser
             filename = name;
         }
 
-        public void SerializeCollection(SortedList<string, T> collection)
+        public void SerializeCollection(List<T> collection)
         {
             try
             {
                 using(xmlFile = new FileStream(path, FileMode.Create, FileAccess.Write))
                 {
-                    var serializer = new DataContractSerializer(typeof(SortedList<string, T>));
+                    var serializer = new DataContractSerializer(typeof(List<T>));
                     using (XmlTextWriter xwriter = new XmlTextWriter(xmlFile, new UTF8Encoding()))
                     {
                         xwriter.Formatting = Formatting.Indented;
@@ -49,19 +49,19 @@ namespace Web_Browser
             }
         }
 
-        public SortedList<string, T> DeserializeCollection()
+        public List<T> DeserializeCollection()
         {
-            SortedList<string, T> list;
+            List<T> list;
             try
             {
                 using (xmlFile = new FileStream(path, FileMode.Open, FileAccess.Read))
                 {
-                    var serializer = new DataContractSerializer(typeof(SortedList<string, T>));
+                    var serializer = new DataContractSerializer(typeof(List<T>));
                     using (XmlTextReader xreader = new XmlTextReader(xmlFile))
                     {
                         //xreader.Formatting = Formatting.Indented;
                         //serializer.WriteObject(xreader, collection);
-                        list = (SortedList<string, T>)serializer.ReadObject(xreader);
+                        list = (List<T>)serializer.ReadObject(xreader);
                         Console.WriteLine("Read from XML");
                         return list;
                     }

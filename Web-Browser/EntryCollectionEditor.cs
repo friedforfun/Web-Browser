@@ -10,9 +10,17 @@ using System.Windows.Forms;
 
 namespace Web_Browser
 {
-    public partial class EntryCollectionEditor : Form
+
+    public partial class EntryCollectionEditor : Form 
     {
-        public EntryCollectionEditor()
+        public static class EntryCollectionEditorBuilder<T> where T : EntryRecord
+        {
+            public static EntryCollectionEditor NewWindow(T source)
+            {
+                return new EntryCollectionEditor();
+            }
+        }
+        private EntryCollectionEditor()
         {
             InitializeComponent();
         }

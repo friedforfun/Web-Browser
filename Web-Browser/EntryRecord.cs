@@ -30,6 +30,7 @@ namespace Web_Browser
         public string Filename;
 
         private SortedList<string, EntryElement> EntryCollection = new SortedList<string, EntryElement>();
+        private List<EntryElement> _EntryCollection = new List<EntryElement>();
 
         public event EventHandler<EntryRecordChanged> EntryChanged = delegate { };
 
@@ -52,21 +53,52 @@ namespace Web_Browser
             EntryElement nextEntry = instantiateEntry(url, title);
             try
             {
+                if (GetIndex(nextEntry.Title) > -1) throw new ArgumentException("Title should be unique for each entry");
+                _EntryCollection.Add(nextEntry);
+                OnEntryChanged(nextEntry.Title, ARU.Added, write);
+                /*
                 if (title != "")
                 {
                     EntryCollection.Add(title, nextEntry);
-                    OnEntryChanged(title, ARU.Added, write);
+
+                    OnEntryChanged(nextEntry.Title, ARU.Added, write);
                 } else
                 {
                     // url as entry title & key
                     EntryCollection.Add(url, nextEntry);
                     OnEntryChanged(url, ARU.Added, write);
-                }
+                }*/
 
             }
             catch (ArgumentException e)
             {
                 KeyExists(e, nextEntry, write);
+            }
+        }
+
+        public void AddEntry(EntryElement entry, bool write)
+        {
+            try
+            {
+                _EntryCollection.Add(entry);
+                OnEntryChanged(entry.Title, ARU.Added, write);
+                /*
+                if (title != "")
+                {
+                    EntryCollection.Add(title, nextEntry);
+
+                    OnEntryChanged(nextEntry.Title, ARU.Added, write);
+                } else
+                {
+                    // url as entry title & key
+                    EntryCollection.Add(url, nextEntry);
+                    OnEntryChanged(url, ARU.Added, write);
+                }*/
+
+            }
+            catch (ArgumentException e)
+            {
+                KeyExists(e, entry, write);
             }
         }
 
@@ -134,7 +166,8 @@ namespace Web_Browser
         {
             try
             {
-                EntryCollection.Remove(title);
+                int index = GetIndex(title);
+                _EntryCollection.RemoveAt(index);
 
             }
             catch (ArgumentNullException)
@@ -160,7 +193,8 @@ namespace Web_Browser
             RemoveEntry(title, write, false);
             try
             {
-                EntryCollection.Add(title, nextEntry);
+                _EntryCollection.Add(nextEntry);
+                //EntryCollection.Add(title, nextEntry);
             }
             catch (ArgumentException)
             {
@@ -185,7 +219,8 @@ namespace Web_Browser
         {
             EntryElement nextEntry = new EntryElement(nextUrl, nextTitle, GetTime(title));
             RemoveEntry(title, write, false);
-            EntryCollection.Add(nextTitle, nextEntry);
+            _EntryCollection.Add(nextEntry);
+            //EntryCollection.Add(nextTitle, nextEntry);
 
             // Setup & trigger event
             OnEntryChanged(title, ARU.Updated, write);
@@ -196,7 +231,8 @@ namespace Web_Browser
         {
             string title = nextEntry.Title;   
             RemoveEntry(title, write, false);
-            EntryCollection.Add(title, nextEntry);
+            _EntryCollection.Add(nextEntry);
+            //EntryCollection.Add(title, nextEntry);
 
             // Setup & trigger event
             OnEntryChanged(title, ARU.Updated, write);
@@ -204,12 +240,19 @@ namespace Web_Browser
 
         public string GetUrl(string title)
         {
-            return EntryCollection[title].Url;
+            int index = GetIndex(title);
+            return _EntryCollection[index].Url;
         }
 
         public DateTime GetTime(string title)
         {
-            return EntryCollection[title].AccessTime;
+            int index = GetIndex(title);
+            return _EntryCollection[index].AccessTime;
+        }
+
+        public int GetIndex(string title)
+        {
+            return _EntryCollection.FindIndex(entry => entry.Title.Equals(title));
         }
 
         void OnEntryChanged(string title, ARU state, bool WriteFile)
@@ -230,24 +273,36 @@ namespace Web_Browser
 
         public void SerializeCollection()
         {
-            persistanceManager.SerializeCollection(EntryCollection);
+            persistanceManager.SerializeCollection(_EntryCollection);
         }
 
         public void DeserializeCollection()
         {
-            SortedList<string, EntryElement> _tempCollection = persistanceManager.DeserializeCollection();
-            foreach(string key in _tempCollection.Keys)
+            List<EntryElement> _tempCollection = persistanceManager.DeserializeCollection();
+            if (_tempCollection == null) return;
+            
+            foreach (EntryElement entry in _tempCollection)
             {
-                EntryElement newElement = _tempCollection[key];
-                if (EntryCollection.ContainsKey(key))
+                int index = GetIndex(entry.Title);
+
+                // When the entry being read has a key collision
+                if (_EntryCollection.Contains(entry))
                 {
-                    EditEntry(newElement, false);
+                    return;
                 }
-                else
+                else if (index > -1)
                 {
-                    string title = newElement.Title;
-                    string url = newElement.Url;
-                    AddEntry(url, title, false);
+                    EntryElement current = _EntryCollection[index];
+                    if (entry.Url.Equals(current.Url) && entry.AccessTime.CompareTo(current.AccessTime) > 0)
+                    {
+                        // The key & URL are the same
+                        // use most recent access time
+                        EditEntry(entry, false);
+                    }
+                    return;
+                } else
+                {
+                    AddEntry(entry, false);
                 }
             }
 
@@ -256,7 +311,7 @@ namespace Web_Browser
 
     [KnownType(typeof(EntryElement[]))]
     [DataContract]
-    public class EntryElement : Entry
+    public class EntryElement : Entry, IComparable<EntryElement>
     {
 
         // when editing instantiate a new favourite and delete this one
@@ -295,6 +350,32 @@ namespace Web_Browser
             _title = title;
             _accessTime = time;
         }
+
+        public CompareBy Compareby = CompareBy.AlphabetTitle;
+
+        public int CompareTo(EntryElement other)
+        {
+            if (other == null) return 1;
+
+            switch (Compareby)
+            {
+                case CompareBy.AlphabetTitle:
+                    return string.Compare(Title, other.Title);
+                case CompareBy.AlphabetUrl:
+                    return string.Compare(Url, other.Url);
+                case CompareBy.Chronological:
+                    return AccessTime.CompareTo(other.AccessTime);
+                default:
+                    throw new ArgumentException("CompareBy enum has undefined case");
+            }
+        }
+    }
+
+    public enum CompareBy
+    {
+        AlphabetTitle,
+        AlphabetUrl,
+        Chronological
     }
 
     public enum ARU
