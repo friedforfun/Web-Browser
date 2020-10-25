@@ -26,39 +26,7 @@ namespace Web_Browser
             filename = name;
         }
 
-        public void Example()
-        {
-            try
-            {
-                XmlTextReader reader = new XmlTextReader(path);
-                XmlSchema schema = XmlSchema.Read(reader, ValidationCallback);
-                schema.Write(Console.Out);
-                FileStream file = new FileStream("new.xsd", FileMode.Create, FileAccess.ReadWrite);
-                XmlTextWriter xwriter = new XmlTextWriter(file, new UTF8Encoding());
-                xwriter.Formatting = Formatting.Indented;
-                schema.Write(xwriter);
-            }
-            catch(Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }
-
-        private void openWriteFileStream(FileMode mode)
-        {
-            //Mode enum: https://docs.microsoft.com/en-us/dotnet/api/system.io.filemode?view=netcore-3.1
-            try
-            {
-                
-            }
-            catch(Exception e)
-            {
-
-            }
-            
-        }
-
-        public void SerizalizeCollection(SortedList<string, T> collection)
+        public void SerializeCollection(SortedList<string, T> collection)
         {
             try
             {
@@ -69,7 +37,7 @@ namespace Web_Browser
                     {
                         xwriter.Formatting = Formatting.Indented;
                         serializer.WriteObject(xwriter, collection);
-                        Console.WriteLine("Should be written");
+                        Console.WriteLine("Write To XML");
                         xwriter.Flush();
                     }
                         
@@ -79,9 +47,32 @@ namespace Web_Browser
             {
                 Console.WriteLine(e.Message);
             }
-
         }
 
+        public SortedList<string, T> DeserializeCollection()
+        {
+            SortedList<string, T> list;
+            try
+            {
+                using (xmlFile = new FileStream(path, FileMode.Open, FileAccess.Read))
+                {
+                    var serializer = new DataContractSerializer(typeof(SortedList<string, T>));
+                    using (XmlTextReader xreader = new XmlTextReader(xmlFile))
+                    {
+                        //xreader.Formatting = Formatting.Indented;
+                        //serializer.WriteObject(xreader, collection);
+                        list = (SortedList<string, T>)serializer.ReadObject(xreader);
+                        Console.WriteLine("Read from XML");
+                        return list;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return null;
+        }
 
         private static void ValidationCallback(object sender, ValidationEventArgs args)
         {

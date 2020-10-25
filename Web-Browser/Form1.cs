@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -17,6 +18,7 @@ namespace Web_Browser
         private PageContent content;
         private Favourites favourites;
         private History history;
+        private FileWatcher watcher;
 
         public BrowserWindow()
         {
@@ -26,6 +28,31 @@ namespace Web_Browser
             history = History.Instance;
             favourites.EntryChanged += Favourites_Changed;
             history.EntryChanged += History_Changed;
+            string path = Application.StartupPath;
+            watcher = new FileWatcher(path);
+            watcher.FSEventHandler += FS_Changed;
+            watcher.WatcherError += Watcher_Error;
+            watcher.Run();
+            favourites.DeserializeCollection();
+            history.DeserializeCollection();
+        }
+
+        private void FS_Changed(object sender, FileSystemEventArgs e)
+        {
+            Console.WriteLine($"File: {e.FullPath} {e.ChangeType} {e.Name}");
+            if (e.Name == favourites.Filename)
+            {
+                // Favourites changed
+            } 
+            else if (e.Name == history.Filename)
+            {
+                // History changed
+            }
+        }
+
+        private void Watcher_Error(object sender, ErrorEventArgs e)
+        {
+            Console.WriteLine($"Error: {e}");
         }
 
 
@@ -167,7 +194,8 @@ namespace Web_Browser
 
         private void AddFavourites_Click(object sender, EventArgs e)
         {
-            favourites.AddEntry(content.Url, content.Title);
+            // Add entry and write to file
+            favourites.AddEntry(content.Url, content.Title, true);
         }
 
         private void AddCustomFavourite_Click(object sender, EventArgs e)

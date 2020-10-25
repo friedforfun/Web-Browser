@@ -73,7 +73,7 @@ namespace Web_Browser
             Url = url;
             await GetPage();
             LocalHistory.NewPage(Url, Title);
-            SingletonHistory.AddEntry(Url, Title);
+            SingletonHistory.AddEntry(Url, Title, true);
 
             ContextChangedEventArgs args = new ContextChangedEventArgs();
             args.Url = Url;

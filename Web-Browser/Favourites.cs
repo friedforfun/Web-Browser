@@ -15,10 +15,16 @@ namespace Web_Browser
         // Lazy 
         private static readonly Lazy<Favourites> singleton = new Lazy<Favourites>(() => new Favourites());
 
-        public static Favourites Instance { get { return singleton.Value; } }
+        public static Favourites Instance { get => singleton.Value; }
 
         private Favourites(): base("favourites")
         {
+        }
+
+        public override void KeyExists(ArgumentException e, EntryElement element, bool write)
+        {
+            // Key already exists / null key
+            MessageBox.Show("A favourite with this title already exists.\n Try to add a custom favourite with a new name", "Add Favourites Error");
         }
 
     }

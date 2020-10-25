@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using System.Diagnostics;
 
 namespace Web_Browser
 {
@@ -16,35 +17,29 @@ namespace Web_Browser
     /// <typeparam name="T">Type implementing the Entry class</typeparam>
     interface ICanWriteXML<T> where T : Entry
     {
-        T[] GetList();
-       // void SetList(T[] list);
+        void SerializeCollection();
+        void DeserializeCollection();
     }
 
     /// <summary>
     /// An entry record used for History and Favourites collection
     /// </summary>
     
-    [DataContract]
     public class EntryRecord : ICanWriteXML<EntryElement>
     {
-        [XmlIgnore]
-        private SortedList<string, EntryElement> EntryCollection = new SortedList<string, EntryElement>();
+        public string Filename;
 
-        [DataMember]
-        public EntryElement[] serialiser
-        {
-            get => GetList();
-            set => SetList(value);
-        }
+        private SortedList<string, EntryElement> EntryCollection = new SortedList<string, EntryElement>();
 
         public event EventHandler<EntryRecordChanged> EntryChanged = delegate { };
 
-        [XmlIgnore]
         private Persistance<EntryElement> persistanceManager;
 
         public EntryRecord(string filename)
         {
+            Filename = filename;
             persistanceManager = new Persistance<EntryElement>(filename);
+            // if file exists deserialize here
         }
 
         /// <summary>
@@ -52,59 +47,69 @@ namespace Web_Browser
         /// </summary>
         /// <param name="url">The URL of the entry</param>
         /// <param name="title">The title of the entry</param>
-        public void AddEntry(string url, string title)
+        public void AddEntry(string url, string title, bool write)
         {
-            EntryElement nextEntry = new EntryElement(url, title);
+            EntryElement nextEntry = instantiateEntry(url, title);
             try
             {
                 if (title != "")
                 {
                     EntryCollection.Add(title, nextEntry);
-                    OnEntryChanged(title, ARU.Added);
+                    OnEntryChanged(title, ARU.Added, write);
                 } else
                 {
+                    // url as entry title & key
                     EntryCollection.Add(url, nextEntry);
-                    OnEntryChanged(url, ARU.Added);
+                    OnEntryChanged(url, ARU.Added, write);
                 }
-                // Setup & trigger event
 
             }
-            catch (ArgumentException)
+            catch (ArgumentException e)
             {
-                // Key already exists / null key
-                MessageBox.Show("A favourite with this title already exists.", "Add Favourite Error");
+                KeyExists(e, nextEntry, write);
             }
         }
 
-
-        public EntryElement[] GetList()
+        private EntryElement instantiateEntry(string url, string title)
         {
-            EntryElement[] list = new EntryElement[EntryCollection.Count];
+            EntryElement nextEntry;
+            if (title != "")
+            {
+                nextEntry = new EntryElement(url, title);
+            } else
+            {
+                nextEntry = new EntryElement(url, url);
+            }
+            return nextEntry;
+        }
+
+        public virtual void KeyExists(ArgumentException e, EntryElement element, bool write)
+        {
+            // Key already exists / null key
+            MessageBox.Show("An element with this key already exists.", "Add Collection Error");
+        }
+
+        public virtual ToolStripItemCollection BuildMenu(ToolStrip owner)
+        {
+            ToolStripItem[] items = new ToolStripItem[EntryCollection.Count];
             int i = 0;
-            foreach (string key in EntryCollection.Keys)
+            foreach(EntryElement entry in EntryCollection.Values)
             {
-                EntryElement ele = EntryCollection[key];
-                list[i] = ele;
-                i++;
+                items[i] = new ToolStripMenuItem();
+                items[i].Text = entry.Title;
+                items[i].Size = new System.Drawing.Size(270, 34);
+                items[i].Name = entry.Title;
             }
-            return list;
+            ToolStripItemCollection tic = new ToolStripItemCollection(owner, items);
+            return tic;
         }
-
-        public void SetList(EntryElement[] list)
-        {
-            EntryCollection.Clear();
-            for (int i = 0; i < list.Length; i++)
-            {
-                EntryCollection.Add(list[i].Title, list[i]);
-            }
-        }
-
 
         /// <summary>
         /// Remove the entry from the list by key
         /// </summary>
         /// <param name="title"></param>
-        public void RemoveEntry(string title)
+        /// <param name="write"></param>
+        public void RemoveEntry(string title, bool write)
         {
             try
             {
@@ -116,18 +121,43 @@ namespace Web_Browser
                 Console.WriteLine("Attempted to remove a non-existent element from a list");
             }
             // attempt to update the gui regardless of error state
-            OnEntryChanged(title, ARU.Removed);
+            OnEntryChanged(title, ARU.Removed, write);
         }
 
-        public IList<string> GetTitles()
+        /// <summary>
+        /// Remove entry from the list, control thrown event
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="write"></param>
+        /// <param name="bEvent"></param>
+        public void RemoveEntry(string title, bool write, bool bEvent)
+        {
+            try
+            {
+                EntryCollection.Remove(title);
+
+            }
+            catch (ArgumentNullException)
+            {
+                Console.WriteLine("Attempted to remove a non-existent element from a list");
+            }
+            // attempt to update the gui regardless of error state
+            if (bEvent)
+            {
+                OnEntryChanged(title, ARU.Removed, write);
+            }
+        }
+
+
+        public IList<string> GetKeys()
         {
             return EntryCollection.Keys;
         }
 
-        public void EditEntryUrl(string title, string url)
+        public void EditEntryUrl(string title, string url, bool write)
         {
             EntryElement nextEntry = new EntryElement(url, title, GetTime(title));
-            RemoveEntry(title);
+            RemoveEntry(title, write, false);
             try
             {
                 EntryCollection.Add(title, nextEntry);
@@ -138,27 +168,38 @@ namespace Web_Browser
             }
 
             // Setup & trigger event
-            OnEntryChanged(title, ARU.Updated);
+            OnEntryChanged(title, ARU.Updated, write);
         }
 
-        public void EditEntryTitle(string title, string nextTitle)
+        public void EditEntryTitle(string title, string nextTitle, bool write)
         {
             EntryElement nextEntry = new EntryElement(GetUrl(title), nextTitle, GetTime(title));
-            RemoveEntry(title);
+            RemoveEntry(title, write, false);
             EntryCollection.Add(nextTitle, nextEntry);
 
             // Setup & trigger event
-            OnEntryChanged(title, ARU.Updated);
+            OnEntryChanged(title, ARU.Updated, write);
         }
 
-        public void EditEntry(string title, string nextTitle, string nextUrl)
+        public void EditEntry(string title, string nextTitle, string nextUrl, bool write)
         {
             EntryElement nextEntry = new EntryElement(nextUrl, nextTitle, GetTime(title));
-            RemoveEntry(title);
+            RemoveEntry(title, write, false);
             EntryCollection.Add(nextTitle, nextEntry);
 
             // Setup & trigger event
-            OnEntryChanged(title, ARU.Updated);
+            OnEntryChanged(title, ARU.Updated, write);
+        }
+
+
+        public void EditEntry(EntryElement nextEntry, bool write)
+        {
+            string title = nextEntry.Title;   
+            RemoveEntry(title, write, false);
+            EntryCollection.Add(title, nextEntry);
+
+            // Setup & trigger event
+            OnEntryChanged(title, ARU.Updated, write);
         }
 
         public string GetUrl(string title)
@@ -171,35 +212,56 @@ namespace Web_Browser
             return EntryCollection[title].AccessTime;
         }
 
-        void OnEntryChanged(string title, ARU state)
+        void OnEntryChanged(string title, ARU state, bool WriteFile)
         {
             EntryRecordChanged updatedEntry = new EntryRecordChanged();
             updatedEntry.AddRemUpd = state;
             updatedEntry.EntryKey = title;
+            updatedEntry.WriteFile = WriteFile;
             EventHandler<EntryRecordChanged> handler = EntryChanged;
-            // handler never null so no need to check if null
+            // handler has null deligate so no need to check if null
             handler(null, updatedEntry);
-            WriteSerializedCollection();
+            if (WriteFile)
+            {
+                SerializeCollection();
+            }
         }
 
 
-        public void WriteSerializedCollection()
+        public void SerializeCollection()
         {
-            persistanceManager.SerizalizeCollection(EntryCollection);
+            persistanceManager.SerializeCollection(EntryCollection);
         }
 
+        public void DeserializeCollection()
+        {
+            SortedList<string, EntryElement> _tempCollection = persistanceManager.DeserializeCollection();
+            foreach(string key in _tempCollection.Keys)
+            {
+                EntryElement newElement = _tempCollection[key];
+                if (EntryCollection.ContainsKey(key))
+                {
+                    EditEntry(newElement, false);
+                }
+                else
+                {
+                    string title = newElement.Title;
+                    string url = newElement.Url;
+                    AddEntry(url, title, false);
+                }
+            }
+
+        }
     }
+
     [KnownType(typeof(EntryElement[]))]
     [DataContract]
     public class EntryElement : Entry
     {
 
         // when editing instantiate a new favourite and delete this one
-        [DataMember]
         private string _url;
-        [DataMember]
         private string _title;
-        [DataMember]
         private DateTime _accessTime;
         
         [DataMember]
@@ -244,6 +306,7 @@ namespace Web_Browser
 
     public class EntryRecordChanged : EventArgs
     {
+        public bool WriteFile;
         public ARU AddRemUpd;
         public string EntryKey;
     }

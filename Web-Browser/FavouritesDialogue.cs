@@ -23,7 +23,8 @@ namespace Web_Browser
 
         private void OkBtn_Click(object sender, EventArgs e)
         {
-            fav.AddEntry(UrlTextBox.Text, TitleTextBox.Text);
+            // Add entry and write to file
+            fav.AddEntry(UrlTextBox.Text, TitleTextBox.Text, true);
             Close();
         }
 
