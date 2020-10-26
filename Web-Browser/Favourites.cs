@@ -17,7 +17,7 @@ namespace Web_Browser
 
         public static Favourites Instance { get => singleton.Value; }
 
-        private Favourites(): base("favourites")
+        private Favourites(): base("Favourites")
         {
         }
 

@@ -182,9 +182,9 @@ namespace Web_Browser
         }
 
 
-        public IList<string> GetKeys()
+        public List<EntryElement> GetList()
         {
-            return EntryCollection.Keys;
+            return _EntryCollection;
         }
 
         public void EditEntryUrl(string title, string url, bool write)
@@ -368,6 +368,11 @@ namespace Web_Browser
                 default:
                     throw new ArgumentException("CompareBy enum has undefined case");
             }
+        }
+
+        public override string ToString()
+        {
+            return $"{Title} | {Url}\n | {AccessTime}";
         }
     }
 

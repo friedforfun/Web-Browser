@@ -87,6 +87,9 @@
     <Compile Include="Persistance.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="EntryCollectionEditor.resx">
+      <DependentUpon>EntryCollectionEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FavouritesDialogue.resx">
       <DependentUpon>FavouritesDialogue.cs</DependentUpon>
     </EmbeddedResource>

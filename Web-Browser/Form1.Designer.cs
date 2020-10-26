@@ -41,13 +41,13 @@
             this.AddFavourites = new System.Windows.Forms.ToolStripMenuItem();
             this.AddCustomFavourite = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenHistory = new System.Windows.Forms.ToolStripMenuItem();
+            this.EditHistory = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenFavourites = new System.Windows.Forms.ToolStripMenuItem();
             this.EditFavourites = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusBar = new System.Windows.Forms.Panel();
             this.RenderToggle = new System.Windows.Forms.CheckBox();
             this.StatusCodeLabel = new System.Windows.Forms.Label();
             this.Renderer = new System.Windows.Forms.WebBrowser();
-            this.editHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuPicker.SuspendLayout();
             this.StatusBar.SuspendLayout();
             this.SuspendLayout();
@@ -166,47 +166,55 @@
             this.OpenHistory,
             this.OpenFavourites});
             this.MenuPicker.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
-            this.MenuPicker.Location = new System.Drawing.Point(698, 77);
+            this.MenuPicker.Location = new System.Drawing.Point(692, 77);
             this.MenuPicker.Name = "MenuPicker";
-            this.MenuPicker.Size = new System.Drawing.Size(215, 181);
+            this.MenuPicker.Size = new System.Drawing.Size(212, 179);
             this.MenuPicker.TabIndex = 11;
             this.MenuPicker.Text = "MenuPicker";
             this.MenuPicker.Visible = false;
+            this.MenuPicker.MouseLeave += new System.EventHandler(this.MenuPicker_MouseLeave);
             // 
             // SetHomePage
             // 
             this.SetHomePage.Name = "SetHomePage";
-            this.SetHomePage.Size = new System.Drawing.Size(208, 29);
+            this.SetHomePage.Size = new System.Drawing.Size(154, 29);
             this.SetHomePage.Text = "Set Home Page";
             // 
             // AddFavourites
             // 
             this.AddFavourites.Name = "AddFavourites";
-            this.AddFavourites.Size = new System.Drawing.Size(208, 29);
+            this.AddFavourites.Size = new System.Drawing.Size(154, 29);
             this.AddFavourites.Text = "Add to Favourites";
             this.AddFavourites.Click += new System.EventHandler(this.AddFavourites_Click);
             // 
             // AddCustomFavourite
             // 
             this.AddCustomFavourite.Name = "AddCustomFavourite";
-            this.AddCustomFavourite.Size = new System.Drawing.Size(208, 29);
+            this.AddCustomFavourite.Size = new System.Drawing.Size(154, 29);
             this.AddCustomFavourite.Text = "Add Custom Favourite";
             this.AddCustomFavourite.Click += new System.EventHandler(this.AddCustomFavourite_Click);
             // 
             // OpenHistory
             // 
             this.OpenHistory.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.editHistoryToolStripMenuItem});
+            this.EditHistory});
             this.OpenHistory.Name = "OpenHistory";
-            this.OpenHistory.Size = new System.Drawing.Size(208, 29);
+            this.OpenHistory.Size = new System.Drawing.Size(154, 29);
             this.OpenHistory.Text = "History";
+            // 
+            // EditHistory
+            // 
+            this.EditHistory.Name = "EditHistory";
+            this.EditHistory.Size = new System.Drawing.Size(218, 34);
+            this.EditHistory.Text = "Edit History...";
+            this.EditHistory.Click += new System.EventHandler(this.EditHistory_Click);
             // 
             // OpenFavourites
             // 
             this.OpenFavourites.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.EditFavourites});
             this.OpenFavourites.Name = "OpenFavourites";
-            this.OpenFavourites.Size = new System.Drawing.Size(208, 29);
+            this.OpenFavourites.Size = new System.Drawing.Size(154, 29);
             this.OpenFavourites.Text = "Favourites";
             // 
             // EditFavourites
@@ -214,6 +222,7 @@
             this.EditFavourites.Name = "EditFavourites";
             this.EditFavourites.Size = new System.Drawing.Size(270, 34);
             this.EditFavourites.Text = "Edit Favourites...";
+            this.EditFavourites.Click += new System.EventHandler(this.EditFavourites_Click);
             // 
             // StatusBar
             // 
@@ -255,12 +264,6 @@
             this.Renderer.Size = new System.Drawing.Size(938, 483);
             this.Renderer.TabIndex = 13;
             this.Renderer.Visible = false;
-            // 
-            // editHistoryToolStripMenuItem
-            // 
-            this.editHistoryToolStripMenuItem.Name = "editHistoryToolStripMenuItem";
-            this.editHistoryToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
-            this.editHistoryToolStripMenuItem.Text = "Edit History...";
             // 
             // BrowserWindow
             // 
@@ -315,7 +318,7 @@
         private System.Windows.Forms.Label StatusCodeLabel;
         private System.Windows.Forms.CheckBox RenderToggle;
         private System.Windows.Forms.WebBrowser Renderer;
-        private System.Windows.Forms.ToolStripMenuItem editHistoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem EditHistory;
     }
 }
 

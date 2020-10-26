@@ -15,7 +15,7 @@ namespace Web_Browser
 
         public static History Instance { get { return singleton.Value; } }
 
-        private History(): base("history")
+        private History(): base("History")
         {
             
         }
@@ -27,9 +27,9 @@ namespace Web_Browser
             // else add new entry with suffix (1)
             string key = element.Title;
             int i = 0;
-            foreach(string k in GetKeys())
+            foreach(EntryElement k in GetList())
             {
-                if (k.StartsWith(key))
+                if (k.Title.StartsWith(key))
                 {
                     i++;
                 }

@@ -108,6 +108,7 @@ namespace Web_Browser
             {
                 case ARU.Added:
                     ToolStripMenuItem nextItem = new ToolStripMenuItem(e.EntryKey);
+                    nextItem.Click += MenuItem_Click;
                     nextItem.Name = e.EntryKey;
                     dropDown.Items.Add(nextItem);
                     break;
@@ -120,11 +121,17 @@ namespace Web_Browser
                     dropDown.Items.RemoveByKey(e.EntryKey);
                     ToolStripMenuItem updatedItem = new ToolStripMenuItem(e.EntryKey);
                     updatedItem.Name = e.EntryKey;
+                    updatedItem.Click += MenuItem_Click;
                     dropDown.Items.Add(updatedItem);
                     break;
             }
         }
 
+        private void MenuItem_Click(object sender, EventArgs e)
+        {
+
+            throw new NotImplementedException();
+        }
 
         private void GoBtn_Click(object sender, EventArgs e)
         {
@@ -202,6 +209,23 @@ namespace Web_Browser
         {
            FavouritesDialogue CustomFavourite = new FavouritesDialogue(content.Title, content.Url, favourites);
            CustomFavourite.Show();
+        }
+
+        private void EditHistory_Click(object sender, EventArgs e)
+        {
+            EntryCollectionEditor historyEditor = new EntryCollectionEditor(history);
+            historyEditor.Show();
+        }
+
+        private void EditFavourites_Click(object sender, EventArgs e)
+        {
+            EntryCollectionEditor favouritesEditor = new EntryCollectionEditor(favourites);
+            favouritesEditor.Show();
+        }
+
+        private void MenuPicker_MouseLeave(object sender, EventArgs e)
+        {
+            MenuPicker.Visible = false;
         }
     }
 }
