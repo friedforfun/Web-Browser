@@ -91,7 +91,7 @@
             this.FilterInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.FilterInput.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FilterInput.Location = new System.Drawing.Point(12, 61);
+            this.FilterInput.Location = new System.Drawing.Point(12, 56);
             this.FilterInput.Name = "FilterInput";
             this.FilterInput.Size = new System.Drawing.Size(727, 35);
             this.FilterInput.TabIndex = 6;
@@ -129,12 +129,12 @@
             // TitleColumn
             // 
             this.TitleColumn.Text = "Title";
-            this.TitleColumn.Width = 100;
+            this.TitleColumn.Width = 452;
             // 
             // UrlColumn
             // 
             this.UrlColumn.Text = "URL";
-            this.UrlColumn.Width = 150;
+            this.UrlColumn.Width = 182;
             // 
             // DateColumn
             // 

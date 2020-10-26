@@ -29,7 +29,7 @@ namespace Web_Browser
     {
         public string Filename;
 
-        private SortedList<string, EntryElement> EntryCollection = new SortedList<string, EntryElement>();
+        //private SortedList<string, EntryElement> EntryCollection = new SortedList<string, EntryElement>();
         private List<EntryElement> _EntryCollection = new List<EntryElement>();
 
         public event EventHandler<EntryRecordChanged> EntryChanged = delegate { };
@@ -121,6 +121,7 @@ namespace Web_Browser
             MessageBox.Show("An element with this key already exists.", "Add Collection Error");
         }
 
+        /*
         public virtual ToolStripItemCollection BuildMenu(ToolStrip owner)
         {
             ToolStripItem[] items = new ToolStripItem[EntryCollection.Count];
@@ -134,7 +135,7 @@ namespace Web_Browser
             }
             ToolStripItemCollection tic = new ToolStripItemCollection(owner, items);
             return tic;
-        }
+        }*/
 
         /// <summary>
         /// Remove the entry from the list by key
@@ -145,7 +146,8 @@ namespace Web_Browser
         {
             try
             {
-                EntryCollection.Remove(title);
+                int index = GetIndex(title);
+                _EntryCollection.RemoveAt(index);
 
             }
             catch (ArgumentNullException)
@@ -209,7 +211,7 @@ namespace Web_Browser
         {
             EntryElement nextEntry = new EntryElement(GetUrl(title), nextTitle, GetTime(title));
             RemoveEntry(title, write, false);
-            EntryCollection.Add(nextTitle, nextEntry);
+            _EntryCollection.Add(nextEntry);
 
             // Setup & trigger event
             OnEntryChanged(title, ARU.Updated, write);
@@ -261,9 +263,10 @@ namespace Web_Browser
             updatedEntry.AddRemUpd = state;
             updatedEntry.EntryKey = title;
             updatedEntry.WriteFile = WriteFile;
+            updatedEntry.Path = Filename;
             EventHandler<EntryRecordChanged> handler = EntryChanged;
             // handler has null deligate so no need to check if null
-            handler(null, updatedEntry);
+            handler(this, updatedEntry);
             if (WriteFile)
             {
                 SerializeCollection();
@@ -395,5 +398,6 @@ namespace Web_Browser
         public bool WriteFile;
         public ARU AddRemUpd;
         public string EntryKey;
+        public string Path;
     }
 }

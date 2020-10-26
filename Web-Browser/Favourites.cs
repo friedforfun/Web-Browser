@@ -10,7 +10,7 @@ namespace Web_Browser
     // Sealed to help the JIT compiler optimisation
     public sealed class Favourites : EntryRecord
     {
-        public string HomeUrl = "http://www.google.com";
+        public string HomeUrl = "http://www.duckduckgo.com";
 
         // Lazy 
         private static readonly Lazy<Favourites> singleton = new Lazy<Favourites>(() => new Favourites());
@@ -25,6 +25,12 @@ namespace Web_Browser
         {
             // Key already exists / null key
             MessageBox.Show("A favourite with this title already exists.\n Try to add a custom favourite with a new name", "Add Favourites Error");
+        }
+
+        public void SetHomeURL(string url)
+        {
+            HomeUrl = url;
+            // trigger write to file here
         }
 
     }

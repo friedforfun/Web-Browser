@@ -84,6 +84,7 @@ namespace Web_Browser
         {
             ToolStripDropDown favDropdown = OpenFavourites.DropDown;
             Update_History_Favourites_Menu(favDropdown, e);
+            // repaint edit menu also
         }
 
         /// <summary>
@@ -110,6 +111,7 @@ namespace Web_Browser
                     ToolStripMenuItem nextItem = new ToolStripMenuItem(e.EntryKey);
                     nextItem.Click += MenuItem_Click;
                     nextItem.Name = e.EntryKey;
+                    nextItem.Tag = e.Path;
                     dropDown.Items.Add(nextItem);
                     break;
 
@@ -129,15 +131,38 @@ namespace Web_Browser
 
         private void MenuItem_Click(object sender, EventArgs e)
         {
+            ToolStripMenuItem source = (ToolStripMenuItem) sender;
+            string key = source.Name;
+            string id = (string) source.Tag;
+            string buttonUrl;
 
-            throw new NotImplementedException();
+            if (id.Equals("Favourites"))
+            {
+               buttonUrl = favourites.GetUrl(key);
+            } else if (id.Equals("History"))
+            {
+                buttonUrl = history.GetUrl(key);
+            } else
+            {
+                Console.WriteLine("ID not found");
+                buttonUrl = null;
+            }
+
+            if (buttonUrl.Equals(content.Url))
+            {
+                content.NavigateNoHistory(buttonUrl);
+            }
+            else
+            {
+                content.Navigate(buttonUrl);
+            }
         }
 
         private void GoBtn_Click(object sender, EventArgs e)
         {
             // call navigate on PageContent with URL input as arg
             string url = UrlInput.Text;
-            if (url == content.Url)
+            if (url.Equals(content.Url))
             {
                 content.NavigateNoHistory(url);
             } else
@@ -214,18 +239,45 @@ namespace Web_Browser
         private void EditHistory_Click(object sender, EventArgs e)
         {
             EntryCollectionEditor historyEditor = new EntryCollectionEditor(history);
+            historyEditor.ElementsDeleted += Editor_ElementsDeleted;
             historyEditor.Show();
         }
 
         private void EditFavourites_Click(object sender, EventArgs e)
         {
             EntryCollectionEditor favouritesEditor = new EntryCollectionEditor(favourites);
+            favouritesEditor.ElementsDeleted += Editor_ElementsDeleted;
             favouritesEditor.Show();
+        }
+
+        private void Editor_ElementsDeleted(object sender, EntryCollectionEditorDeletedArgs e)
+        {
+            
+            foreach (string key in e.keys)
+            {
+                Console.WriteLine("Deleted: {0}", key);
+                if (e.SourceName.Equals("History"))
+                {
+                    history.RemoveEntry(key, true);
+                } else
+                {
+                    favourites.RemoveEntry(key, true);
+                }
+                
+            }
+
+
+            //throw new NotImplementedException();
         }
 
         private void MenuPicker_MouseLeave(object sender, EventArgs e)
         {
             MenuPicker.Visible = false;
+        }
+
+        private void SetHomePage_Click(object sender, EventArgs e)
+        {
+            favourites.SetHomeURL(content.Url);
         }
     }
 }
