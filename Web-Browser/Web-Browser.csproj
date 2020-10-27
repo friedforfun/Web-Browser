@@ -65,6 +65,12 @@
     <Compile Include="EntryCollectionEditor.Designer.cs">
       <DependentUpon>EntryCollectionEditor.cs</DependentUpon>
     </Compile>
+    <Compile Include="EntryEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EntryEditor.Designer.cs">
+      <DependentUpon>EntryEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="EntryRecord.cs" />
     <Compile Include="Favourites.cs" />
     <Compile Include="AbstractClasses.cs" />
@@ -89,6 +95,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="EntryCollectionEditor.resx">
       <DependentUpon>EntryCollectionEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EntryEditor.resx">
+      <DependentUpon>EntryEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FavouritesDialogue.resx">
       <DependentUpon>FavouritesDialogue.cs</DependentUpon>

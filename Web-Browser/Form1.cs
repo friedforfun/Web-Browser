@@ -58,7 +58,7 @@ namespace Web_Browser
 
         private async void BrowserWindow_Load(object sender, EventArgs e)
         {
-            content = await PageContent.AsyncCreate(favourites.HomeUrl, history);
+            content = await PageContent.AsyncCreate(favourites.HomeUrl, history, favourites);
             content.ContextChanged += content_OnContextChanged;
             SourceViewer.Text = content.HttpCode;
             UrlInput.Text = content.Url;
@@ -125,6 +125,12 @@ namespace Web_Browser
                     updatedItem.Name = e.EntryKey;
                     updatedItem.Click += MenuItem_Click;
                     dropDown.Items.Add(updatedItem);
+                    break;
+
+                case ARU.Cleared:
+                    ToolStripMenuItem editItem = (ToolStripMenuItem) dropDown.Items[0];
+                    dropDown.Items.Clear();
+                    dropDown.Items.Add(editItem);
                     break;
             }
         }
@@ -239,35 +245,13 @@ namespace Web_Browser
         private void EditHistory_Click(object sender, EventArgs e)
         {
             EntryCollectionEditor historyEditor = new EntryCollectionEditor(history);
-            historyEditor.ElementsDeleted += Editor_ElementsDeleted;
             historyEditor.Show();
         }
 
         private void EditFavourites_Click(object sender, EventArgs e)
         {
             EntryCollectionEditor favouritesEditor = new EntryCollectionEditor(favourites);
-            favouritesEditor.ElementsDeleted += Editor_ElementsDeleted;
             favouritesEditor.Show();
-        }
-
-        private void Editor_ElementsDeleted(object sender, EntryCollectionEditorDeletedArgs e)
-        {
-            
-            foreach (string key in e.keys)
-            {
-                Console.WriteLine("Deleted: {0}", key);
-                if (e.SourceName.Equals("History"))
-                {
-                    history.RemoveEntry(key, true);
-                } else
-                {
-                    favourites.RemoveEntry(key, true);
-                }
-                
-            }
-
-
-            //throw new NotImplementedException();
         }
 
         private void MenuPicker_MouseLeave(object sender, EventArgs e)
@@ -278,6 +262,19 @@ namespace Web_Browser
         private void SetHomePage_Click(object sender, EventArgs e)
         {
             favourites.SetHomeURL(content.Url);
+        }
+
+        private void BrowserWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.F5:
+                    content.NavigateNoHistory(content.Url);
+                    break;
+                case Keys.Back:
+                    content.Back();
+                    break;
+            }
         }
     }
 }

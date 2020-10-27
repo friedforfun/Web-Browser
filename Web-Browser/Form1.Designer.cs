@@ -166,9 +166,9 @@
             this.OpenHistory,
             this.OpenFavourites});
             this.MenuPicker.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
-            this.MenuPicker.Location = new System.Drawing.Point(689, 77);
+            this.MenuPicker.Location = new System.Drawing.Point(692, 77);
             this.MenuPicker.Name = "MenuPicker";
-            this.MenuPicker.Size = new System.Drawing.Size(215, 181);
+            this.MenuPicker.Size = new System.Drawing.Size(212, 151);
             this.MenuPicker.TabIndex = 11;
             this.MenuPicker.Text = "MenuPicker";
             this.MenuPicker.Visible = false;
@@ -177,21 +177,21 @@
             // SetHomePage
             // 
             this.SetHomePage.Name = "SetHomePage";
-            this.SetHomePage.Size = new System.Drawing.Size(208, 29);
+            this.SetHomePage.Size = new System.Drawing.Size(205, 29);
             this.SetHomePage.Text = "Set Home Page";
             this.SetHomePage.Click += new System.EventHandler(this.SetHomePage_Click);
             // 
             // AddFavourites
             // 
             this.AddFavourites.Name = "AddFavourites";
-            this.AddFavourites.Size = new System.Drawing.Size(208, 29);
+            this.AddFavourites.Size = new System.Drawing.Size(205, 29);
             this.AddFavourites.Text = "Add to Favourites";
             this.AddFavourites.Click += new System.EventHandler(this.AddFavourites_Click);
             // 
             // AddCustomFavourite
             // 
             this.AddCustomFavourite.Name = "AddCustomFavourite";
-            this.AddCustomFavourite.Size = new System.Drawing.Size(208, 29);
+            this.AddCustomFavourite.Size = new System.Drawing.Size(205, 29);
             this.AddCustomFavourite.Text = "Add Custom Favourite";
             this.AddCustomFavourite.Click += new System.EventHandler(this.AddCustomFavourite_Click);
             // 
@@ -200,7 +200,7 @@
             this.OpenHistory.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.EditHistory});
             this.OpenHistory.Name = "OpenHistory";
-            this.OpenHistory.Size = new System.Drawing.Size(208, 29);
+            this.OpenHistory.Size = new System.Drawing.Size(205, 29);
             this.OpenHistory.Text = "History";
             // 
             // EditHistory
@@ -215,7 +215,7 @@
             this.OpenFavourites.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.EditFavourites});
             this.OpenFavourites.Name = "OpenFavourites";
-            this.OpenFavourites.Size = new System.Drawing.Size(208, 29);
+            this.OpenFavourites.Size = new System.Drawing.Size(205, 29);
             this.OpenFavourites.Text = "Favourites";
             // 
             // EditFavourites
@@ -283,12 +283,14 @@
             this.Controls.Add(this.ForwardsBtn);
             this.Controls.Add(this.BackBtn);
             this.Controls.Add(this.MenuPicker);
+            this.KeyPreview = true;
             this.MainMenuStrip = this.MenuPicker;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MinimumSize = new System.Drawing.Size(499, 344);
             this.Name = "BrowserWindow";
             this.Text = "Browser";
             this.Load += new System.EventHandler(this.BrowserWindow_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BrowserWindow_KeyDown);
             this.MenuPicker.ResumeLayout(false);
             this.MenuPicker.PerformLayout();
             this.StatusBar.ResumeLayout(false);

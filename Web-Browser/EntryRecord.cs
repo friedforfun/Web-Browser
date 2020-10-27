@@ -183,6 +183,12 @@ namespace Web_Browser
             }
         }
 
+        public void ClearList()
+        {
+            _EntryCollection.Clear();
+            OnEntryChanged(null, ARU.Cleared, true);
+        }
+
 
         public List<EntryElement> GetList()
         {
@@ -255,6 +261,11 @@ namespace Web_Browser
         public int GetIndex(string title)
         {
             return _EntryCollection.FindIndex(entry => entry.Title.Equals(title));
+        }
+
+        public EntryElement GetEntry(int index)
+        {
+            return _EntryCollection[index];
         }
 
         void OnEntryChanged(string title, ARU state, bool WriteFile)
@@ -390,7 +401,8 @@ namespace Web_Browser
     {
         Removed,
         Updated,
-        Added
+        Added,
+        Cleared
     }
 
     public class EntryRecordChanged : EventArgs

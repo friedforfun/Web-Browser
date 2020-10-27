@@ -14,6 +14,8 @@ namespace Web_Browser
     public partial class EntryCollectionEditor : Form 
     {
         private string name;
+
+        // Use this to raise rerender events
         private EntryRecord _source;
         public EntryCollectionEditor(EntryRecord source)
         {
@@ -38,15 +40,6 @@ namespace Web_Browser
                 EntrySelector.Items.Add(nEntry);
             }
             EntrySelector.EndUpdate();
-        }
-
-        public event EventHandler<EntryCollectionEditorDeletedArgs> ElementsDeleted = delegate { };
-
-        private void OnElementsDeleted(EntryCollectionEditorDeletedArgs e)
-        {
-            EventHandler<EntryCollectionEditorDeletedArgs> handler = ElementsDeleted;
-            // handler has null deligate so no need to check if null
-            handler(this, e);
         }
 
         private void EntrySelector_SelectedIndexChanged(object sender, EventArgs e)
@@ -82,49 +75,32 @@ namespace Web_Browser
         private void DeleteBtn_Click(object sender, EventArgs e)
         {
             ListView.SelectedListViewItemCollection sel = EntrySelector.SelectedItems;
-            string[] delKeys = new string[sel.Count];
 
-            for (int i = 0; i < sel.Count; i++)
+            foreach (ListViewItem.ListViewSubItemCollection subitems in sel)
             {
-                delKeys[i] = sel[i].SubItems[0].Text;
+                _source.RemoveEntry(subitems[0].Text, true);
             }
-            EntryCollectionEditorDeletedArgs args = new EntryCollectionEditorDeletedArgs();
-            args.SourceName = name;
-            args.keys = delKeys;
-            OnElementsDeleted(args);
             _paintList(_source.GetList());
         }
 
         private void ClearBtn_Click(object sender, EventArgs e)
         {
-            List<EntryElement> list = _source.GetList();
-            string[] delKeys = new string[list.Count];
-            for (int i = 0; i < list.Count; i++)
-            {
-                delKeys[i] = list[i].Title;
-            }
-            EntryCollectionEditorDeletedArgs args = new EntryCollectionEditorDeletedArgs();
-            args.SourceName = name;
-            args.keys = delKeys;
-            OnElementsDeleted(args);
+            _source.ClearList();
             _paintList(_source.GetList());
         }
 
         private void EditBtn_Click(object sender, EventArgs e)
         {
-
+            ListView.SelectedListViewItemCollection sel = EntrySelector.SelectedItems;
+            int index = _source.GetIndex(sel[0].SubItems[0].Text);
+            EntryEditor editor = new EntryEditor(_source.GetEntry(index));
+            editor.Show();
         }
 
         private void FilterInput_TextChanged(object sender, EventArgs e)
         {
 
         }
-    }
-
-    public class EntryCollectionEditorDeletedArgs: EventArgs
-    {
-        public string SourceName;
-        public string[] keys;
     }
 
 }

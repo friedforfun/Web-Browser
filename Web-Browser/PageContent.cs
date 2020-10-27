@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 
 namespace Web_Browser
 {
@@ -24,6 +25,7 @@ namespace Web_Browser
 
         public PageHistory LocalHistory;
         public History SingletonHistory;
+        public Favourites SingletonFavourites;
         private BrowserResponse _response;
 
         public event EventHandler<ContextChangedEventArgs> ContextChanged;
@@ -34,14 +36,16 @@ namespace Web_Browser
         /// <param name="url">The URL of the first page to open on instantiation</param>
         /// <param name="singletonHistory">Reference to the history object to manage updating the list</param>
         /// <returns></returns>
-        public static async Task<PageContent> AsyncCreate(string url, History singletonHistory)
+        public static async Task<PageContent> AsyncCreate(string url, History singletonHistory, Favourites singletonFavourites)
         {
             PageContent pc = new PageContent(url);
+            pc.SingletonHistory = singletonHistory;
+            pc.SingletonFavourites = singletonFavourites;
             await pc.GetPage();
             // init LocalHistory
             PageHistory FirstPage = new PageHistory(pc.Url, pc.Title);
             pc.LocalHistory = FirstPage;
-            pc.SingletonHistory = singletonHistory;
+
             return pc;
         } 
 
@@ -60,7 +64,21 @@ namespace Web_Browser
         /// <param name="url">The URL to get the HTTP response from</param>
         private async Task<BrowserResponse> GetPage()
         {
-            _response = await HttpRequests.Get(Url);
+            try { 
+                _response = await HttpRequests.Get(Url);
+            } catch (ArgumentException e)
+            {
+                if (LocalHistory.CanStepBack)
+                {
+                    Back();
+                } else
+                {
+
+                    NavigateNoHistory(SingletonFavourites.HomeUrl);
+                }
+
+            }
+
             return _response;
         }
 

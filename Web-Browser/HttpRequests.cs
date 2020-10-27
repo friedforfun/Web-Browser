@@ -9,6 +9,7 @@ using System.Net.Http;
 using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Parser;
+using System.Windows.Forms;
 
 namespace Web_Browser
 {
@@ -36,9 +37,17 @@ namespace Web_Browser
             {
                 // fix uri string
             }
+            try
+            {
+                HttpResponseMessage httpres = await client.GetAsync(uri);
+                return await BrowserResponse.CreateAsync(httpres);
 
-            HttpResponseMessage httpres = await client.GetAsync(uri);
-            return await BrowserResponse.CreateAsync(httpres);
+            } catch (InvalidOperationException e)
+            {
+                MessageBox.Show("Invalid URI provided");
+            }
+
+            throw new ArgumentException("Attempted to navigate using improper URI Argument");
         }
 
     }
