@@ -12,14 +12,16 @@ namespace Web_Browser
 {
     public partial class EntryEditor : Form
     {
-        private EntryElement source;
-        public EntryEditor(EntryElement element)
+        private EntryElement _sourceElement;
+        private EntryRecord _record;
+        public EntryEditor(EntryRecord source, int index)
         {
-            source = element;
+            _record = source;
+            _sourceElement = _record.GetEntry(index);
             InitializeComponent();
-            TitleTextBox.Text = element.Title;
-            UrlTextBox.Text = element.Url;
-            AccessTimeLabel.Text = element.AccessTime.ToString();
+            TitleTextBox.Text = _sourceElement.Title;
+            UrlTextBox.Text = _sourceElement.Url;
+            AccessTimeLabel.Text = _sourceElement.AccessTime.ToString();
         }
 
         private void CancelBtn_Click(object sender, EventArgs e)
@@ -29,9 +31,27 @@ namespace Web_Browser
 
         private void OkBtn_Click(object sender, EventArgs e)
         {
-            source.Title = TitleTextBox.Text;
-            source.Url = UrlTextBox.Text;
+            if (!_sourceElement.Title.Equals(TitleTextBox.Text) || !_sourceElement.Url.Equals(UrlTextBox.Text))
+            {
+                Console.WriteLine($"{_sourceElement.Title} => {TitleTextBox.Text}");
+                _record.EditEntry(_sourceElement.Title, TitleTextBox.Text, UrlTextBox.Text, true);
+            }
+            OnListMutated(EventArgs.Empty);
             Close();
         }
+
+        protected virtual void OnListMutated(EventArgs e)
+        {
+            EventHandler handler = ListMutated;
+            handler(this, e);
+            
+        }
+
+        public event EventHandler ListMutated = delegate { };
+    }
+
+    public class ListMutatedEventArgs : EventArgs
+    {
+        public string Title;
     }
 }

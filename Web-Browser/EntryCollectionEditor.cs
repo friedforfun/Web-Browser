@@ -76,9 +76,9 @@ namespace Web_Browser
         {
             ListView.SelectedListViewItemCollection sel = EntrySelector.SelectedItems;
 
-            foreach (ListViewItem.ListViewSubItemCollection subitems in sel)
+            foreach (ListViewItem item in sel)
             {
-                _source.RemoveEntry(subitems[0].Text, true);
+                _source.RemoveEntry(item.SubItems[0].Text, true);
             }
             _paintList(_source.GetList());
         }
@@ -93,8 +93,14 @@ namespace Web_Browser
         {
             ListView.SelectedListViewItemCollection sel = EntrySelector.SelectedItems;
             int index = _source.GetIndex(sel[0].SubItems[0].Text);
-            EntryEditor editor = new EntryEditor(_source.GetEntry(index));
+            EntryEditor editor = new EntryEditor(_source, index);
+            editor.ListMutated += ListMutated;
             editor.Show();
+        }
+
+        private void ListMutated(object sender, EventArgs e)
+        {
+            _paintList(_source.GetList());
         }
 
         private void FilterInput_TextChanged(object sender, EventArgs e)

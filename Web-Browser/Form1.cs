@@ -84,7 +84,6 @@ namespace Web_Browser
         {
             ToolStripDropDown favDropdown = OpenFavourites.DropDown;
             Update_History_Favourites_Menu(favDropdown, e);
-            // repaint edit menu also
         }
 
         /// <summary>
@@ -120,6 +119,7 @@ namespace Web_Browser
                     break;
 
                 case ARU.Updated:
+                    Console.WriteLine("Edited: {0}", e.EntryKey);
                     dropDown.Items.RemoveByKey(e.EntryKey);
                     ToolStripMenuItem updatedItem = new ToolStripMenuItem(e.EntryKey);
                     updatedItem.Name = e.EntryKey;

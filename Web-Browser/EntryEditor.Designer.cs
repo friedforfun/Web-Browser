@@ -63,7 +63,7 @@
             this.AccessTimeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.AccessTimeLabel.AutoSize = true;
             this.AccessTimeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.AccessTimeLabel.Location = new System.Drawing.Point(260, 146);
+            this.AccessTimeLabel.Location = new System.Drawing.Point(168, 146);
             this.AccessTimeLabel.Name = "AccessTimeLabel";
             this.AccessTimeLabel.Size = new System.Drawing.Size(69, 29);
             this.AccessTimeLabel.TabIndex = 2;

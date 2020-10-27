@@ -227,11 +227,13 @@ namespace Web_Browser
         {
             EntryElement nextEntry = new EntryElement(nextUrl, nextTitle, GetTime(title));
             RemoveEntry(title, write, false);
+            OnEntryChanged(title, ARU.Removed, false);
             _EntryCollection.Add(nextEntry);
             //EntryCollection.Add(nextTitle, nextEntry);
 
             // Setup & trigger event
-            OnEntryChanged(title, ARU.Updated, write);
+            
+            OnEntryChanged(nextTitle, ARU.Added, write);
         }
 
 
@@ -239,11 +241,12 @@ namespace Web_Browser
         {
             string title = nextEntry.Title;   
             RemoveEntry(title, write, false);
+            OnEntryChanged(title, ARU.Removed, false);
             _EntryCollection.Add(nextEntry);
             //EntryCollection.Add(title, nextEntry);
 
             // Setup & trigger event
-            OnEntryChanged(title, ARU.Updated, write);
+            OnEntryChanged(nextEntry.Title, ARU.Added, write);
         }
 
         public string GetUrl(string title)
