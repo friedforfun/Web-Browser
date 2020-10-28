@@ -282,9 +282,6 @@ namespace Web_Browser
                 case Keys.F5:
                     content.NavigateNoHistory(content.Url);
                     break;
-                case Keys.Back:
-                    content.Back();
-                    break;
             }
         }
 
