@@ -1,0 +1,76 @@
+\documentclass[11pt]{article}
+\usepackage[table]{xcolor}
+\usepackage[]{geometry} 
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+\usepackage{setspace}
+\doublespacing
+
+\usepackage{amssymb}
+\usepackage{epstopdf}
+\usepackage{inputenc}
+
+\usepackage{dashrule}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{mwe}
+\usepackage{caption}
+
+\usepackage[backend=biber,style=ieee]{biblatex}
+\usepackage[toc]{appendix}
+\usepackage[acronym]{glossaries}
+
+
+\hypersetup{ linktoc=all}
+\graphicspath{ {./images/}{../images/} }
+
+\makenoidxglossaries
+
+\newacronym{ai}{AI}{Artifical Intelligence}
+
+
+
+\usepackage{subfiles}
+
+\begin{document}
+\title{%
+	\bf Web Browser\\ 
+	\large Coursework 1 \\
+	F20SC: Industrial Programming}
+
+\author{
+	Sam Fay-Hunt | \texttt{sf52@hw.ac.uk}
+}
+
+\maketitle
+\thispagestyle{empty}
+\pagebreak
+
+
+\tableofcontents
+\thispagestyle{empty}
+\pagebreak
+
+
+\setcounter{page}{1}
+
+\section{Introduction}
+\subfile{Sections/introduction}
+
+\section{Requirements}
+
+\section{Design Considerations}
+
+\section{User Guide}
+
+\section{Developer Guide}
+
+\section{Testing}
+
+\section{Conclusions}
+
+
+
+\end{document}
