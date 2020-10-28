@@ -244,7 +244,15 @@ namespace Web_Browser
         private void AddFavourites_Click(object sender, EventArgs e)
         {
             // Add entry and write to file
-            favourites.AddEntry(content.Url, content.Title, true);
+            try
+            {
+                favourites.AddEntry(content.Url, content.Title, true);
+            }
+            catch (ArgumentException)
+            {
+                MessageBox.Show("A favourite with this title already exists.\n Try to add a custom favourite with a new name", "Add Favourites Error");
+            }
+            
         }
 
         private void AddCustomFavourite_Click(object sender, EventArgs e)
@@ -273,6 +281,8 @@ namespace Web_Browser
         private void SetHomePage_Click(object sender, EventArgs e)
         {
             favourites.SetHomeURL(content.Url);
+            Properties.Settings.Default.HomeURL = content.Url;
+            Properties.Settings.Default.Save();
         }
 
         private void BrowserWindow_KeyDown(object sender, KeyEventArgs e)

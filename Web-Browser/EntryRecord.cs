@@ -38,10 +38,10 @@ namespace Web_Browser
 
         private CompareBy _sortStrategy;
 
-        public EntryRecord(string filename, CompareBy sortOrder)
+        public EntryRecord(string filename, CompareBy sortOrder, bool withPersistence)
         {
             Filename = filename;
-            persistanceManager = new Persistance<EntryElement>(filename);
+            if (withPersistence) persistanceManager = new Persistance<EntryElement>(filename);
             _sortStrategy = sortOrder;
             // if file exists deserialize here
         }
@@ -123,44 +123,8 @@ namespace Web_Browser
         public virtual void KeyExists(ArgumentException e, EntryElement element, bool write)
         {
             // Key already exists / null key
-            MessageBox.Show("An element with this key already exists.", "Add Collection Error");
-        }
-
-        /*
-        public virtual ToolStripItemCollection BuildMenu(ToolStrip owner)
-        {
-            ToolStripItem[] items = new ToolStripItem[EntryCollection.Count];
-            int i = 0;
-            foreach(EntryElement entry in EntryCollection.Values)
-            {
-                items[i] = new ToolStripMenuItem();
-                items[i].Text = entry.Title;
-                items[i].Size = new System.Drawing.Size(270, 34);
-                items[i].Name = entry.Title;
-            }
-            ToolStripItemCollection tic = new ToolStripItemCollection(owner, items);
-            return tic;
-        }*/
-
-        /// <summary>
-        /// Remove the entry from the list by key
-        /// </summary>
-        /// <param name="title"></param>
-        /// <param name="write"></param>
-        public void RemoveEntry(string title, bool write)
-        {
-            try
-            {
-                int index = GetIndex(title);
-                _EntryCollection.RemoveAt(index);
-                _EntryCollection.Sort();
-            }
-            catch (ArgumentNullException)
-            {
-                Console.WriteLine("Attempted to remove a non-existent element from a list");
-            }
-            // attempt to update the gui regardless of error state
-            OnEntryChanged(title, ARU.Removed, write);
+            Console.WriteLine("An element with this key already exists.", "Add Collection Error");
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -171,17 +135,10 @@ namespace Web_Browser
         /// <param name="bEvent"></param>
         public void RemoveEntry(string title, bool write, bool bEvent)
         {
-            try
-            {
-                int index = GetIndex(title);
-                _EntryCollection.RemoveAt(index);
-                _EntryCollection.Sort();
+            int index = GetIndex(title);
+            _EntryCollection.RemoveAt(index);
+            _EntryCollection.Sort();
 
-            }
-            catch (ArgumentNullException)
-            {
-                Console.WriteLine("Attempted to remove a non-existent element from a list");
-            }
             // attempt to update the gui regardless of error state
             if (bEvent)
             {

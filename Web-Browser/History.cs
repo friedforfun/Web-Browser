@@ -11,11 +11,13 @@ namespace Web_Browser
     public sealed class History : EntryRecord
     {
 
-        private static readonly Lazy<History> singleton = new Lazy<History>(() => new History());
+        private static readonly Lazy<History> singleton = new Lazy<History>(() => new History(true));
+        private static readonly Lazy<History> singletonFalse = new Lazy<History>(() => new History(false));
 
         public static History Instance { get { return singleton.Value; } }
+        public static History InstanceNoFileWrite { get { return singletonFalse.Value; } }
 
-        private History(): base("History", CompareBy.Chronological)
+        private History(bool withPersistance): base("History", CompareBy.Chronological, withPersistance)
         {
             
         }

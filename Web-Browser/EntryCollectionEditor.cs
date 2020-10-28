@@ -78,7 +78,16 @@ namespace Web_Browser
 
             foreach (ListViewItem item in sel)
             {
-                _source.RemoveEntry(item.SubItems[0].Text, true);
+                try
+                {
+                    _source.RemoveEntry(item.SubItems[0].Text, true, true);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    MessageBox.Show("Attempted to remove a non-existent element from a list");
+                    Console.WriteLine("Attempted to remove a non-existent element from a list");
+                }
+                
             }
             _paintList(_source.GetList());
         }

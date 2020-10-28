@@ -13,26 +13,28 @@ namespace Web_Browser
         public string HomeUrl;
 
         // Lazy 
-        private static readonly Lazy<Favourites> singleton = new Lazy<Favourites>(() => new Favourites());
+        private static readonly Lazy<Favourites> singleton = new Lazy<Favourites>(() => new Favourites(Properties.Settings.Default.HomeURL, true));
+        private static readonly Lazy<Favourites> singletonNoFileWrite = new Lazy<Favourites>(() => new Favourites("http://www.duckduckgo.com", false));
 
         public static Favourites Instance { get => singleton.Value; }
+        public static Favourites InstanceNoFileWrite { get => singletonNoFileWrite.Value; }
 
-        private Favourites(): base("Favourites", CompareBy.AlphabetTitle)
+        private Favourites(string home, bool withPersistance): base("Favourites", CompareBy.AlphabetTitle, withPersistance)
         {
-            HomeUrl = Properties.Settings.Default.HomeURL;
+            HomeUrl = home;
         }
 
         public override void KeyExists(ArgumentException e, EntryElement element, bool write)
         {
             // Key already exists / null key
-            MessageBox.Show("A favourite with this title already exists.\n Try to add a custom favourite with a new name", "Add Favourites Error");
+            // throw error to be handled in ui
+            //MessageBox.Show("A favourite with this title already exists.\n Try to add a custom favourite with a new name", "Add Favourites Error");
+            throw new ArgumentException("A favourite with this title already exists.");
         }
 
         public void SetHomeURL(string url)
         {
             HomeUrl = url;
-            Properties.Settings.Default.HomeURL = url;
-            Properties.Settings.Default.Save();
         }
 
     }
