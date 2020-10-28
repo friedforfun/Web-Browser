@@ -17,7 +17,7 @@ namespace Web_Browser
 
         public static Favourites Instance { get => singleton.Value; }
 
-        private Favourites(): base("Favourites")
+        private Favourites(): base("Favourites", CompareBy.AlphabetTitle)
         {
             HomeUrl = Properties.Settings.Default.HomeURL;
         }

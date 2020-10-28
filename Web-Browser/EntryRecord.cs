@@ -36,10 +36,13 @@ namespace Web_Browser
 
         private Persistance<EntryElement> persistanceManager;
 
-        public EntryRecord(string filename)
+        private CompareBy _sortStrategy;
+
+        public EntryRecord(string filename, CompareBy sortOrder)
         {
             Filename = filename;
             persistanceManager = new Persistance<EntryElement>(filename);
+            _sortStrategy = sortOrder;
             // if file exists deserialize here
         }
 
@@ -55,6 +58,7 @@ namespace Web_Browser
             {
                 if (GetIndex(nextEntry.Title) > -1) throw new ArgumentException("Title should be unique for each entry");
                 _EntryCollection.Add(nextEntry);
+                _EntryCollection.Sort();
                 OnEntryChanged(nextEntry.Title, ARU.Added, write);
                 /*
                 if (title != "")
@@ -81,6 +85,7 @@ namespace Web_Browser
             try
             {
                 _EntryCollection.Add(entry);
+                _EntryCollection.Sort();
                 OnEntryChanged(entry.Title, ARU.Added, write);
                 /*
                 if (title != "")
@@ -148,7 +153,7 @@ namespace Web_Browser
             {
                 int index = GetIndex(title);
                 _EntryCollection.RemoveAt(index);
-
+                _EntryCollection.Sort();
             }
             catch (ArgumentNullException)
             {
@@ -170,6 +175,7 @@ namespace Web_Browser
             {
                 int index = GetIndex(title);
                 _EntryCollection.RemoveAt(index);
+                _EntryCollection.Sort();
 
             }
             catch (ArgumentNullException)
@@ -192,16 +198,19 @@ namespace Web_Browser
 
         public List<EntryElement> GetList()
         {
+            _EntryCollection.Sort();
             return _EntryCollection;
         }
 
         public void EditEntryUrl(string title, string url, bool write)
         {
-            EntryElement nextEntry = new EntryElement(url, title, GetTime(title));
+            EntryElement nextEntry = new EntryElement(url, title, GetTime(title), _sortStrategy);
             RemoveEntry(title, write, false);
+            _EntryCollection.Sort();
             try
             {
                 _EntryCollection.Add(nextEntry);
+                _EntryCollection.Sort();
                 //EntryCollection.Add(title, nextEntry);
             }
             catch (ArgumentException)
@@ -215,9 +224,10 @@ namespace Web_Browser
 
         public void EditEntryTitle(string title, string nextTitle, bool write)
         {
-            EntryElement nextEntry = new EntryElement(GetUrl(title), nextTitle, GetTime(title));
+            EntryElement nextEntry = new EntryElement(GetUrl(title), nextTitle, GetTime(title), _sortStrategy);
             RemoveEntry(title, write, false);
             _EntryCollection.Add(nextEntry);
+            _EntryCollection.Sort();
 
             // Setup & trigger event
             OnEntryChanged(title, ARU.Updated, write);
@@ -225,14 +235,15 @@ namespace Web_Browser
 
         public void EditEntry(string title, string nextTitle, string nextUrl, bool write)
         {
-            EntryElement nextEntry = new EntryElement(nextUrl, nextTitle, GetTime(title));
+            EntryElement nextEntry = new EntryElement(nextUrl, nextTitle, GetTime(title), _sortStrategy);
             RemoveEntry(title, write, false);
             OnEntryChanged(title, ARU.Removed, false);
             _EntryCollection.Add(nextEntry);
+            _EntryCollection.Sort();
             //EntryCollection.Add(nextTitle, nextEntry);
 
             // Setup & trigger event
-            
+
             OnEntryChanged(nextTitle, ARU.Added, write);
         }
 
@@ -243,6 +254,7 @@ namespace Web_Browser
             RemoveEntry(title, write, false);
             OnEntryChanged(title, ARU.Removed, false);
             _EntryCollection.Add(nextEntry);
+            _EntryCollection.Sort();
             //EntryCollection.Add(title, nextEntry);
 
             // Setup & trigger event
@@ -290,6 +302,7 @@ namespace Web_Browser
 
         public void SerializeCollection()
         {
+            _EntryCollection.Sort();
             persistanceManager.SerializeCollection(_EntryCollection);
         }
 
@@ -322,7 +335,7 @@ namespace Web_Browser
                     AddEntry(entry, false);
                 }
             }
-
+            _EntryCollection.Sort();
         }
     }
 
@@ -361,14 +374,15 @@ namespace Web_Browser
             _accessTime = DateTime.Now;
         }
 
-        public EntryElement(string url, string title, DateTime time)
+        public EntryElement(string url, string title, DateTime time, CompareBy comp)
         {
             _url = url;
             _title = title;
             _accessTime = time;
+            Compareby = comp;
         }
 
-        public CompareBy Compareby = CompareBy.AlphabetTitle;
+        public CompareBy Compareby;
 
         public int CompareTo(EntryElement other)
         {

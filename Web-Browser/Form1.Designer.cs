@@ -247,6 +247,7 @@
             this.RenderToggle.TabIndex = 1;
             this.RenderToggle.Text = "Render Page";
             this.RenderToggle.UseVisualStyleBackColor = true;
+            this.RenderToggle.CheckedChanged += new System.EventHandler(this.RenderToggle_CheckedChanged);
             // 
             // StatusCodeLabel
             // 
@@ -259,7 +260,11 @@
             // 
             // Renderer
             // 
-            this.Renderer.Location = new System.Drawing.Point(8, 86);
+            this.Renderer.AllowNavigation = false;
+            this.Renderer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Renderer.Location = new System.Drawing.Point(4, 85);
             this.Renderer.MinimumSize = new System.Drawing.Size(20, 20);
             this.Renderer.Name = "Renderer";
             this.Renderer.Size = new System.Drawing.Size(938, 483);

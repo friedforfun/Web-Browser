@@ -35,6 +35,7 @@ namespace Web_Browser
             watcher.Run();
             favourites.DeserializeCollection();
             history.DeserializeCollection();
+            Renderer.Navigated += Render_Navigated;
         }
 
         private void FS_Changed(object sender, FileSystemEventArgs e)
@@ -50,6 +51,13 @@ namespace Web_Browser
             }
         }
 
+        private void Render_Navigated(object sender, WebBrowserNavigatedEventArgs e)
+        {
+            string url = e.Url.ToString();
+            if (content.Url != url)
+            content.Navigate(url);
+        }
+
         private void Watcher_Error(object sender, ErrorEventArgs e)
         {
             Console.WriteLine($"Error: {e}");
@@ -62,6 +70,7 @@ namespace Web_Browser
             content.ContextChanged += content_OnContextChanged;
             SourceViewer.Text = content.HttpCode;
             UrlInput.Text = content.Url;
+            Renderer.Url = new Uri(content.Url);
             Text = content.Title;
             StatusCodeLabel.Text = content.StatusMessage;
             SetStateForwardsBack();
@@ -71,6 +80,7 @@ namespace Web_Browser
         {
             UrlInput.Text = e.Url;
             Text = e.Title;
+            Renderer.Url = new Uri(e.Url);
             SourceViewer.Text = content.HttpCode;
             StatusCodeLabel.Text = content.StatusMessage;
             SetStateForwardsBack();
@@ -133,6 +143,7 @@ namespace Web_Browser
                     dropDown.Items.Add(editItem);
                     break;
             }
+            
         }
 
         private void MenuItem_Click(object sender, EventArgs e)
@@ -256,7 +267,7 @@ namespace Web_Browser
 
         private void MenuPicker_MouseLeave(object sender, EventArgs e)
         {
-            MenuPicker.Visible = false;
+            //MenuPicker.Visible = false;
         }
 
         private void SetHomePage_Click(object sender, EventArgs e)
@@ -274,6 +285,21 @@ namespace Web_Browser
                 case Keys.Back:
                     content.Back();
                     break;
+            }
+        }
+
+        private void RenderToggle_CheckedChanged(object sender, EventArgs e)
+        {
+            if (RenderToggle.Checked)
+            {
+                Renderer.Visible = true;
+                Renderer.AllowNavigation = true;
+                SourceViewer.Visible = false;
+            } else
+            {
+                Renderer.Visible = false;
+                Renderer.AllowNavigation = false;
+                SourceViewer.Visible = true;
             }
         }
     }

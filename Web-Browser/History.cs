@@ -15,7 +15,7 @@ namespace Web_Browser
 
         public static History Instance { get { return singleton.Value; } }
 
-        private History(): base("History")
+        private History(): base("History", CompareBy.Chronological)
         {
             
         }
