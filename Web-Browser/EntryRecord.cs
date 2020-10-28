@@ -112,10 +112,10 @@ namespace Web_Browser
             EntryElement nextEntry;
             if (title != "")
             {
-                nextEntry = new EntryElement(url, title);
+                nextEntry = new EntryElement(url, title, _sortStrategy);
             } else
             {
-                nextEntry = new EntryElement(url, url);
+                nextEntry = new EntryElement(url, url, _sortStrategy);
             }
             return nextEntry;
         }
@@ -146,10 +146,10 @@ namespace Web_Browser
             }
         }
 
-        public void ClearList()
+        public void ClearList(bool write)
         {
             _EntryCollection.Clear();
-            OnEntryChanged(null, ARU.Cleared, true);
+            OnEntryChanged(null, ARU.Cleared, write);
         }
 
 
@@ -158,6 +158,7 @@ namespace Web_Browser
             _EntryCollection.Sort();
             return _EntryCollection;
         }
+
 
         public void EditEntryUrl(string title, string url, bool write)
         {
@@ -218,11 +219,17 @@ namespace Web_Browser
             OnEntryChanged(nextEntry.Title, ARU.Added, write);
         }
 
+        /// <summary>
+        /// Get the URL of the entry by its key
+        /// </summary>
+        /// <param name="title">The title(key) of the entry</param>
+        /// <returns>The entry URl</returns>
         public string GetUrl(string title)
         {
             int index = GetIndex(title);
             return _EntryCollection[index].Url;
         }
+
 
         public DateTime GetTime(string title)
         {
@@ -234,6 +241,7 @@ namespace Web_Browser
         {
             return _EntryCollection.FindIndex(entry => entry.Title.Equals(title));
         }
+
 
         public EntryElement GetEntry(int index)
         {
@@ -324,11 +332,12 @@ namespace Web_Browser
             get => _accessTime;
             set => _accessTime = value;
         }
-        public EntryElement(string url, string title)
+        public EntryElement(string url, string title, CompareBy comp)
         {
             _url = url;
             _title = title;
             _accessTime = DateTime.Now;
+            Compareby = comp;
         }
 
         public EntryElement(string url, string title, DateTime time, CompareBy comp)

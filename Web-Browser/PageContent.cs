@@ -275,7 +275,7 @@ namespace Web_Browser
                     Current = Current.Forwards;
                 }
             }
-            protected class PageEntry : HistoryEntry
+            public class PageEntry : HistoryEntry
             {
                 private string _url;
                 private string _title;

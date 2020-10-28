@@ -94,7 +94,7 @@ namespace Web_Browser
 
         private void ClearBtn_Click(object sender, EventArgs e)
         {
-            _source.ClearList();
+            _source.ClearList(true);
             _paintList(_source.GetList());
         }
 
