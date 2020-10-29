@@ -286,7 +286,7 @@ namespace BrowserTests
         {
             bool eventTriggered = false;
             EntryRecord h = new EntryRecord("Test", CompareBy.AlphabetTitle, false);
-            h.EntryChanged += delegate { eventTriggered = true; };
+            h.EntryChanged += delegate {  eventTriggered = true; };
             EntryElement e = new EntryElement("http://www.duckduckgo.com", "DuckDuckGo", CompareBy.AlphabetTitle);
             Assert.AreEqual(eventTriggered, false, "The event should not have triggered");
             h.AddEntry(e, false);

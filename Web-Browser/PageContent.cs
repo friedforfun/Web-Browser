@@ -186,7 +186,7 @@ namespace Web_Browser
         /// <summary>
         /// PageHistory is used for navigating back and forwards within a window
         /// </summary>
-        public class PageHistory: HistoryNav
+        public sealed class PageHistory: HistoryNav
         {
             /// <summary>
             /// Points to the current node in the list
@@ -275,7 +275,7 @@ namespace Web_Browser
                     Current = Current.Forwards;
                 }
             }
-            public class PageEntry : HistoryEntry
+            public sealed class PageEntry : HistoryEntry
             {
                 private string _url;
                 private string _title;

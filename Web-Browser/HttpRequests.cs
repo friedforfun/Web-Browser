@@ -13,7 +13,7 @@ using AngleSharp.Html.Parser;
 
 namespace Web_Browser
 {
-    public class HttpRequests
+    public sealed class HttpRequests
     {
         /// <summary>
         /// Static HttpClient shared accross all instances of Http class
@@ -52,7 +52,7 @@ namespace Web_Browser
 
     }
 
-    public class BrowserResponse
+    public sealed class BrowserResponse
     {
         public string Title { get => _title; }
         private string _title;

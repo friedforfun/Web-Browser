@@ -1,6 +1,12 @@
 \documentclass[11pt]{article}
 \usepackage[table]{xcolor}
-\usepackage[]{geometry} 
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ total={170mm,257mm},
+ left=20mm,
+ top=20mm,
+ }
 \usepackage{amsmath}
 \usepackage{graphicx}
 
@@ -19,12 +25,13 @@
 \usepackage{caption}
 \usepackage{longtable}
 \usepackage{minted}
+\usepackage{xr}
 
 \usepackage[backend=biber,style=ieee]{biblatex}
 \usepackage[toc]{appendix}
 \usepackage[acronym]{glossaries}
 
-
+\addbibresource{IndustrialProg.bib}
 \hypersetup{ linktoc=all}
 \graphicspath{ {./images/}{../images/} }
 
@@ -35,10 +42,10 @@
 \newacronym{html}{HTML}{hypertext markup language}
 
 
-
+\newcommand{\genT}{\textless\ignorespaces T\textgreater}
 
 \usepackage{subfiles}
-
+ 
 \begin{document}
 \title{%
 	\bf Web Browser\\ 
@@ -65,11 +72,11 @@
 \subfile{Sections/introduction}
 
 \section{Requirements}
-\subfile{Sections/requirements.tex}
-\pagebreak
+\subfile{Sections/requirements}
 
 \section{Design Considerations}
 \subfile{Sections/design}
+
 
 \section{User Guide}
 \subfile{Sections/userguide}
@@ -82,6 +89,13 @@
 
 \section{Conclusions}
 \subfile{Sections/conclusions.tex}
+
+\section{References}
+\printbibliography
+
+\appendix
+\section{Appendix}
+\subfile{Sections/appendix}
 
 
 \end{document}

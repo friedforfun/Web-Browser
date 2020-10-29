@@ -44,10 +44,12 @@ namespace Web_Browser
             if (e.Name == favourites.Filename)
             {
                 // Favourites changed
+                //Not yet implemented
             } 
             else if (e.Name == history.Filename)
             {
                 // History changed
+                //Not yet implemented
             }
         }
 
@@ -327,19 +329,66 @@ namespace Web_Browser
 
         private void BrowserWindow_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.KeyCode)
+            if (e.Modifiers == Keys.Control)
             {
-                case Keys.F5:
-                    try
-                    {
-                        content.NavigateNoHistory(content.Url);
-                    }
-                    catch (Exception)
-                    {
-                        MessageBox.Show("Invalid URI provided");
-                    }
-                    break;
+                switch (e.KeyCode)
+                {
+                    case Keys.B:
+                        try
+                        {
+                            favourites.AddEntry(content.Url, content.Title, true);
+                        }
+                        catch (ArgumentException)
+                        {
+                            MessageBox.Show("A favourite with this title already exists.\n Try to add a custom favourite with a new name", "Add Favourites Error");
+                        }
+                        break;
+                    case Keys.V:
+                        FavouritesDialogue CustomFavourite = new FavouritesDialogue(content.Title, content.Url, favourites);
+                        CustomFavourite.Show();
+                        break;
+                    case Keys.H:
+                        try
+                        {
+                            if (content.Url != favourites.HomeUrl)
+                            {
+                                content.Navigate(favourites.HomeUrl);
+                            }
+                            else
+                            {
+                                content.NavigateNoHistory(favourites.HomeUrl);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("Invalid URI provided");
+                        }
+                        break;
+                    case Keys.NumPad4:
+                        content.Back();
+                        break;
+                    case Keys.NumPad6:
+                        content.Forwards();
+                        break;
+                }
             }
+            else
+            {
+                switch (e.KeyCode)
+                {
+                    case Keys.F5:
+                        try
+                        {
+                            content.NavigateNoHistory(content.Url);
+                        }
+                        catch (Exception)
+                        {
+                            MessageBox.Show("Invalid URI provided");
+                        }
+                        break;
+                }
+            }
+            
         }
 
         private void RenderToggle_CheckedChanged(object sender, EventArgs e)

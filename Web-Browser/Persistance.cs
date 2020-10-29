@@ -13,7 +13,7 @@ using System.Reflection;
 
 namespace Web_Browser
 {
-    class Persistance <T>
+    public sealed class Persistance <T>
     {
         private string filename;
         private string rootPath;

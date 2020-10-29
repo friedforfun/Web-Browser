@@ -38,6 +38,12 @@ namespace Web_Browser
 
         private CompareBy _sortStrategy;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="sortOrder"></param>
+        /// <param name="withPersistence"></param>
         public EntryRecord(string filename, CompareBy sortOrder, bool withPersistence)
         {
             Filename = filename;
@@ -363,7 +369,7 @@ namespace Web_Browser
 
     [KnownType(typeof(EntryElement[]))]
     [DataContract]
-    public class EntryElement : Entry, IComparable<EntryElement>
+    public sealed class EntryElement : Entry, IComparable<EntryElement>
     {
 
         // when editing instantiate a new favourite and delete this one

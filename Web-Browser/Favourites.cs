@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,8 +14,8 @@ namespace Web_Browser
         public string HomeUrl;
 
         // Lazy 
-        private static readonly Lazy<Favourites> singleton = new Lazy<Favourites>(() => new Favourites(Properties.Settings.Default.HomeURL, true));
-        private static readonly Lazy<Favourites> singletonNoFileWrite = new Lazy<Favourites>(() => new Favourites("http://www.duckduckgo.com", false));
+        private static readonly Lazy<Favourites> singleton = new Lazy<Favourites>(() => new Favourites(Properties.Settings.Default.HomeURL, true), LazyThreadSafetyMode.ExecutionAndPublication);
+        private static readonly Lazy<Favourites> singletonNoFileWrite = new Lazy<Favourites>(() => new Favourites("http://www.duckduckgo.com", false), LazyThreadSafetyMode.ExecutionAndPublication);
 
         public static Favourites Instance { get => singleton.Value; }
         public static Favourites InstanceNoFileWrite { get => singletonNoFileWrite.Value; }

@@ -1,0 +1,116 @@
+\documentclass[../Main.tex]{subfiles}
+\externaldocument{design} 
+\begin{document}
+
+\begin{figure}[h]
+    \begin{minted}[linenos]{csharp}
+        class PageContent 
+        {
+            // Asyncronously instantiate a PageContent object, replaces constructor
+            public static async Task<PageContent> AsyncCreate(
+                string url,
+                History singletonHistory, 
+                Favourites singletonFavourites)
+    
+             // Navigate to a new page, add the new page to history
+            public async void Navigate(string url)
+    
+            // Navigate to a page without adding to history
+            public async void NavigateNoHistory(string url)
+    
+            // Navigate back through local history
+            public void Back()
+    
+            // Navigate forwards through local history
+            public void Forwards()
+        }
+        
+
+    \end{minted}
+    \caption{Useful PageContent public method signatures with descriptions}
+    \label{fig:PageConentMethods}
+\end{figure}
+
+\begin{figure}[h]
+    \begin{minted}[linenos]{csharp}
+        class EntryRecord 
+        {
+            // Param: filename - The name of the file used to 
+            //        serialize the contained collection.
+            // Param: CompareBy - An enum that determines the order that 
+            //        the collection will be sorted by.
+            // Param: withPersistence - Serialize or not
+            public EntryRecord(
+                string filename, 
+                CompareBy sortOrder, 
+                bool withPersistence)
+
+            // Add a new entry to the collection
+            public void AddEntry(string url, string title, bool write)
+
+            // Remove entry from the list, control thrown event
+            public void RemoveEntry(string title, bool write, bool bEvent)
+
+            // clear all elements from the list
+            public void ClearList(bool write)
+
+            // get the list object
+            public List<EntryElement> GetList()
+
+            // Method to serialize the list
+            public void SerializeCollection()
+
+            // Method to deserialize the list
+            public void DeserializeCollection()
+        }
+    \end{minted}
+    \caption{Some useful EntryRecord public method signatures with descriptions}
+    \label{fig:EntryRecordMethods}
+\end{figure}
+
+\begin{figure}[h]
+    \begin{minted}[linenos]{csharp}
+        {
+            public class Example
+            {
+                public event EventHandler ExampleHandler = delegate { };
+        
+                public void ExampleEvent()
+                {
+                    EventHandler handler = ExampleHandler;
+                    // No need to check if ExampleHandler is null because
+                    // it has the empty delegate assigned
+                    handler(null, EventArgs.Empty);
+                }
+    
+                public void TriggerEvent()
+                {
+                    ExampleEvent();
+                }
+            }
+    
+            [TestClass]
+            class Test
+            {
+                [TestMethod]
+                public void TestEventDelegate() 
+                {
+                    bool eventTriggered = false;
+                    Example e = new Example();
+                    // Named delegates are more commonly used here
+                    e.ExampleHandler += delegate { eventTriggered = true; };
+                    Assert.AreEqual(eventTriggered, false);
+                    e.TriggerEvent();
+                    Assert.AreEqual(eventTriggered, true);
+                }
+            }
+        }
+        
+
+    \end{minted}
+    \caption{Using delegates to raise, trigger, and test events}
+    \label{fig:DelegatesExample}
+\end{figure}
+
+
+\end{document}

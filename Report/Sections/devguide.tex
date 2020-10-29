@@ -1,5 +1,71 @@
 \documentclass[../Main.tex]{subfiles}
 
 \begin{document}
+A high level description of the underlaying model class design can can be found in Section.~\ref{subsec:ClassDes}. This section will focus on the code required to get the model running and linked to the gui.
+
+\subsection{Libraries and Frameworks}
+\begin{itemize}
+    \item \textbf{Windows Forms} - the graphical library, this library is very accessible and can be picked up at a very rapid pace so its almost ideal for a first time project using a GUI in C\#.
+    \item \textbf{AngleSharp} - A DOM parsing library, this allows us to access the DOM using a logical class structure greatly simplifying accessing specific DOM elements when necessary.
+    \item \textbf{Microsoft Visual Studio Unit Testing Framework} - This framework has been used to write the unit tests, it has built in integration to the IDE used for developing this software: Visual Studio 2019
+\end{itemize}
+
+\subsection{Interacting with the model}
+
+Assuming you have representations of the GUI elements described in Section.~\ref{subsec:GuiDes}, first insantiate the \textbf{History} \& \textbf{Favourites} classes so you can assign their event methods. See Fig.~\ref{fig:instantiateHistFav}
+
+\begin{figure}[H]
+    \begin{minted}[linenos]{csharp}
+        public partial class ExampleBrowser
+        {
+            private Favourites fav;
+            private Histroy hist;
+            public ExampleBrowser()
+            {
+                fav = Favourites.Instance;
+                hist = History.Instance;
+                fav.EntryChanged += Favourites_Changed;
+                hist.EntryChanged += History_Changed;
+                // Deserialize any Favourites or History elements stored locally
+                fav.DeserializeCollection();
+                hist.DeserializeCollection();
+            }
+            private void Favourites_Changed(object sender, EntryRecordChanged e) 
+            { /* Update Favourites gui elements */}
+            private void History_Changed(object sender, EntryRecordChanged e) 
+            { /* Update History gui elements */}
+        }
+    \end{minted}
+    \caption{Get the history and favourites instances and assign event handlers}
+    \label{fig:instantiateHistFav}
+\end{figure}
+
+Now that we have our History and Favourites instances we can instantiate a \textbf{PageContent} object. See Fig.~\ref{fig:asyncCreatePageContent}
+
+\begin{figure}[H]
+    \begin{minted}[linenos]{csharp}
+        public partial class ExampleBrowser
+        {
+            private PageContent content;
+            // This method is called by a gui element event that is triggered 
+            // upon first loading the gui
+            private async void ExampleBrowser_Load(object sender, EventArgs e)
+            {
+                content = await PageContent.AsyncCreate(fav.HomeUrl, hist, fav);
+                content.ContextChanged += content_OnContextChanged;
+                // at this point we can use the properties of content to assign 
+                // values to gui elements.
+            }
+            private void content_OnContextChanged(
+                object sender,
+                ContextChangedEventArgs e)
+            { /* Update all gui elements realated to the current web page here */ }
+        }
+    \end{minted}
+    \caption{Async instantiate PageContent with the Home URL}
+    \label{fig:asyncCreatePageContent}
+\end{figure}
+
+At this point you just need to use the public methods in the \textbf{PageContent}, \textbf{History}, and \textbf{Favourites} classes to update the view, and to send control commands to the model. See Fig.\ref{fig:PageConentMethods} for a description of the \textbf{PageContent} class important public methods and their signatures. Likewise see Fig.~\ref{fig:EntryRecordMethods} for a non-exhaustive summary of useful public \textbf{History}/\textbf{Favourites} methods.
 
 \end{document}

@@ -1,10 +1,10 @@
 \documentclass[../Main.tex]{subfiles}
-
+\externaldocument{appendix} 
 \begin{document}
 
-\subsection{Class design}
+\subsection{Class design}\label{subsec:ClassDes}
 
-In general the high level design of this browser has loosely followed the \acrshort{mvc} pattern. 
+In general the high level design of this browser has loosely followed a \acrshort{mvc} pattern. 
 
 \subsubsection{PageContent}
 The most important class to the underlaying model of this web browser is the \textbf{PageContent} class, this class contains references to the \textbf{PageHistory}, \textbf{History}, \textbf{Favourites}, and \textbf{BrowserResponse} classes. 
@@ -12,23 +12,60 @@ It abstracts away alot of the async behaviour by using an Event called \textbf{C
 This class also exposes all the navigation functionality to the GUI and the information such as the HTML code, web page title and status code returned via get requests.
 
 \subsubsection{BrowserResponse \& HttpRequests}
-\acrshort{http} GET requests are handled by the \emph{static Get(string url)} method of the \textbf{HttpRequests} class, this method returns an instance of the \textbf{BrowserResponse} class which is instantiated asynchronously and contains properties including the page title, \acrshort{html} source code, URL, and status code.
+\acrshort{http} GET requests are handled by the \emph{static Get(string url)} method of the \textbf{HttpRequests} class, this method returns an instance of the \textbf{BrowserResponse} class which is instantiated asynchronously and contains properties including the page title, \acrshort{html} source code, URL, and status code. The \textbf{BrowserResponse} class uses the AngleSharp library to read and access DOM elements~\autocite{AngleSharpHome}.
 
 \subsubsection{History \& Favourites}
-There is a significant degree of overlap in the behaviour of the \textbf{History} and \textbf{Favourites} classes so the common functionality has been implemented in a class called \textbf{EntryRecord}. The main distinction between them is the behaviour when there is a duplicated title in their respective lists, this is realised by overriding the \emph{KeyExists()} method. \textbf{History} handles name collisions for new history entries by appending an integer to the end of the name, \textbf{Favourites} on the other hand simply forces the user to enter a new unique custom name if they wish to favourite a page with a name already in its collection.
+There is a significant degree of overlap in the behaviour of the \textbf{History} and \textbf{Favourites} classes so the common functionality has been implemented in a class called \textbf{EntryRecord}. The main distinction between them is the behaviour when there is a duplicated title in their respective lists, this is realised by overriding the \emph{KeyExists()} method.
 
-The \textbf{EntryRecord} class handles all the list operations 
-
-
+The \textbf{EntryRecord} class handles all the list operations (adding, removing, updating elements), and raising events when the list has changed to notify the GUI. This class also has access to the \textbf{Persistance} class that has serilization and deserilization methods.
 
 \subsubsection{PageHistory}
-\textbf{PageHistory} is a session based history navigation class, it only exposes methods for moving back and forwards through the history for a given session, and adding new history items to its own list. It also has properties that provide information about the current node being pointed to in the list. This class is independent of the \textbf{History} class in terms of data, but the nodes representing a single page in the history do inherit from the same abstract class called \textbf{Entry}. It was a deliberate design descision to seperate the \textbf{PageHistory} and \textbf{History} classes, this behaviour is reflected in several prominent web browsers, for example Google Chrome and Mozilla Firefox.
+\textbf{PageHistory} is a session based history navigation class, it only exposes methods for moving back and forwards through the history for a given session, and adding new history items to its own list. 
+It also has properties that provide information about the current node being pointed to in the list. 
+This class is independent of the \textbf{History} class in terms of data, but the nodes representing a single page in the history do inherit from the same abstract class called \textbf{Entry}.
+It was a deliberate design descision to seperate the \textbf{PageHistory} and \textbf{History} classes, this behaviour is reflected in several prominent web browsers, for example Google Chrome and Mozilla Firefox.
 
 
 \subsection{Data structures}
 
-\subsection{Gui Design}
+The \textbf{EntryRecord} class uses the generic form of the list (List\genT where T is the class \textbf{EntryElement}) because it has the convienience of built in search, sort and list manipulation methods as a result of implementing IList\genT, IEnumerable\genT  \& ICollection\genT.~\autocite{dotnet-botListClassSystem}
+
+\textbf{PageHistory} uses a hand built doubly linked list for maintaing the list of pages that could be traversed within the session. This was a convienience descision because modelling it in this manner makes the behaviour very readable but it may not be the most performant solution.
+
+\subsection{Gui Design}\label{subsec:GuiDes}
+
+The primary component of the graphical user interface is the browser window itself, this window features a large textbox to display the HTML source code, along the top of the window there are a series of buttons arranged around a url input text box: back, forwards, refresh, home, go, and menu. The bottom left of the window displays a status code and message.
+This design was heavily inspired by existing browser designs so a user should be able to use this browser fairly intuitively.
 
 \subsection{Advanced language constucts}
+
+Delegates have been used extensively throughout this body of work, particularly when using delegates to invoke a method from an event handler see Fig.~\ref{fig:DelegatesExample}. Anonymous delegates have been very useful during unit testing, specifically to check if an event had been triggered see Fig.~\ref{fig:DelegatesExample}.~\autocite{billwagnerDelegatesProgrammingGuide}
+
+\textbf{Favourites} and \textbf{History} both use a singleton pattern for instantiation (there should only be a single instance of each), to do this in a thread safe manner the Lazy\genT class was used with the Enum LazyThreadSafetyMode.ExecutionAndPublication parameter see Fig.~\ref{fig:LazySingletonExample}.~\autocite{dotnet-botLazyClassSystem,dotnet-botLazyThreadSafetyModeEnumSystem}
+
+\begin{figure}[h]
+    \begin{minted}{csharp}
+        // Sealed to aid the JIT compiler
+        public sealed class SingletonClass
+        {
+            private static readonly Lazy<SingletonClass> singleton = 
+                new Lazy<SingletonClass>(() => new SingletonClass(true),
+                LazyThreadSafetyMode.ExecutionAndPublication);
+
+            public static SingletonClass Instance { get { return singleton.Value; }}
+
+            private SingletonClass() { }
+        }
+
+    \end{minted}
+    \caption{Using Lazy\genT to safely instantiate a singleton class}
+    \label{fig:LazySingletonExample}
+\end{figure}
+
+
+Built in generic types are heavily featured in this codebase such as List\genT, and Task\genT~\autocite{dotnet-botTaskClassSystema}. The most notable custom generic class is \textbf{Persistance\genT} which makes use of generics to serialize and deserialize List\genT objects. It should however be noted that with the code in its current state it is unnecessary to use a generic because only a single class is used to instantiate an instance of \textbf{Persistance\genT}, however for future changes to the program it would be useful to keep it generic to potentially serialize a collection such as \textbf{List\textless\ignorespaces PageEntry\textgreater}.
+
+Small optimisations have been make like sealing classes without children inheriting from them to help the JIT compiler do its job.~\autocite{billwagnerSealedModifierReference}
+
 
 \end{document}

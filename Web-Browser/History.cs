@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,8 +12,8 @@ namespace Web_Browser
     public sealed class History : EntryRecord
     {
 
-        private static readonly Lazy<History> singleton = new Lazy<History>(() => new History(true));
-        private static readonly Lazy<History> singletonFalse = new Lazy<History>(() => new History(false));
+        private static readonly Lazy<History> singleton = new Lazy<History>(() => new History(true), LazyThreadSafetyMode.ExecutionAndPublication);
+        private static readonly Lazy<History> singletonFalse = new Lazy<History>(() => new History(false), LazyThreadSafetyMode.ExecutionAndPublication);
 
         public static History Instance { get { return singleton.Value; } }
         public static History InstanceNoFileWrite { get { return singletonFalse.Value; } }
