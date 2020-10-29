@@ -24,8 +24,15 @@ namespace Web_Browser
         private void OkBtn_Click(object sender, EventArgs e)
         {
             // Add entry and write to file
-            fav.AddEntry(UrlTextBox.Text, TitleTextBox.Text, true);
-            Close();
+            try
+            {
+                fav.AddEntry(UrlTextBox.Text, TitleTextBox.Text, true);
+                Close();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("A favourite with this title already exists.\n Try to add a custom favourite with a new name", "Add Favourites Error");
+            }
         }
 
         private void CancelBtn_Click(object sender, EventArgs e)

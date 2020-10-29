@@ -17,6 +17,8 @@
 \usepackage{url}
 \usepackage{mwe}
 \usepackage{caption}
+\usepackage{longtable}
+\usepackage{minted}
 
 \usepackage[backend=biber,style=ieee]{biblatex}
 \usepackage[toc]{appendix}
@@ -28,7 +30,10 @@
 
 \makenoidxglossaries
 
-\newacronym{ai}{AI}{Artifical Intelligence}
+\newacronym{mvc}{MVC}{model view controller}
+\newacronym{http}{HTTP}{hypertext transfer protocol}
+\newacronym{html}{HTML}{hypertext markup language}
+
 
 
 
@@ -60,17 +65,23 @@
 \subfile{Sections/introduction}
 
 \section{Requirements}
+\subfile{Sections/requirements.tex}
+\pagebreak
 
 \section{Design Considerations}
+\subfile{Sections/design}
 
 \section{User Guide}
+\subfile{Sections/userguide}
 
 \section{Developer Guide}
+\subfile{Sections/devguide}
 
 \section{Testing}
+\subfile{Sections/testing}
 
 \section{Conclusions}
-
+\subfile{Sections/conclusions.tex}
 
 
 \end{document}

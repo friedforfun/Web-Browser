@@ -55,7 +55,18 @@ namespace Web_Browser
         {
             string url = e.Url.ToString();
             if (content.Url != url)
-            content.Navigate(url);
+            {
+                try
+                {
+                    content.Navigate(url);
+                } 
+                catch(Exception)
+                {
+                    MessageBox.Show("Invalid URI provided");
+                }
+            }
+                
+                
         }
 
         private void Watcher_Error(object sender, ErrorEventArgs e)
@@ -164,27 +175,42 @@ namespace Web_Browser
                 Console.WriteLine("ID not found");
                 buttonUrl = null;
             }
-
-            if (buttonUrl.Equals(content.Url))
+            try
             {
-                content.NavigateNoHistory(buttonUrl);
+                if (buttonUrl.Equals(content.Url))
+                {
+                    content.NavigateNoHistory(buttonUrl);
+                }
+                else
+                {
+                    content.Navigate(buttonUrl);
+                }
             }
-            else
+            catch (Exception)
             {
-                content.Navigate(buttonUrl);
+                MessageBox.Show("Invalid URI provided");
             }
+            
         }
 
         private void GoBtn_Click(object sender, EventArgs e)
         {
             // call navigate on PageContent with URL input as arg
             string url = UrlInput.Text;
-            if (url.Equals(content.Url))
+            try
             {
-                content.NavigateNoHistory(url);
-            } else
+                if (url.Equals(content.Url))
+                {
+                    content.NavigateNoHistory(url);
+                }
+                else
+                {
+                    content.Navigate(url);
+                }
+            }
+            catch (Exception)
             {
-                content.Navigate(url);
+                MessageBox.Show("Invalid URI provided");
             }
             //Console.WriteLine("THis: {0}", content.LocalHistory.test);
         }
@@ -201,19 +227,33 @@ namespace Web_Browser
 
         private void RefreshBtn_Click(object sender, EventArgs e)
         {
-            content.NavigateNoHistory(content.Url);
+            try
+            {
+                content.NavigateNoHistory(content.Url);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Invalid URI provided");
+            }
         }
 
         private void HomeBtn_Click(object sender, EventArgs e)
         {
-            if (content.Url != favourites.HomeUrl)
+            try
             {
-                content.Navigate(favourites.HomeUrl);
-            } else
-            {
-                content.NavigateNoHistory(favourites.HomeUrl);
+                if (content.Url != favourites.HomeUrl)
+                {
+                    content.Navigate(favourites.HomeUrl);
+                }
+                else
+                {
+                    content.NavigateNoHistory(favourites.HomeUrl);
+                }
             }
-            
+            catch (Exception)
+            {
+                MessageBox.Show("Invalid URI provided");
+            }
         }
 
         private void SetStateForwardsBack()
@@ -290,7 +330,14 @@ namespace Web_Browser
             switch (e.KeyCode)
             {
                 case Keys.F5:
-                    content.NavigateNoHistory(content.Url);
+                    try
+                    {
+                        content.NavigateNoHistory(content.Url);
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Invalid URI provided");
+                    }
                     break;
             }
         }

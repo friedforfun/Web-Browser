@@ -10,7 +10,7 @@ using System.Windows.Forms.VisualStyles;
 namespace Web_Browser
 {
     /// <summary>
-    /// Object storing the state of a tab
+    /// Object storing the state of the model
     /// </summary>
     public class PageContent
     {

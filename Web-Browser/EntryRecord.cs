@@ -80,6 +80,11 @@ namespace Web_Browser
             }
         }
 
+        /// <summary>
+        /// Add an already instantiated new entry to the collection
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <param name="write"></param>
         public void AddEntry(EntryElement entry, bool write)
         {
             try
@@ -87,18 +92,6 @@ namespace Web_Browser
                 _EntryCollection.Add(entry);
                 _EntryCollection.Sort();
                 OnEntryChanged(entry.Title, ARU.Added, write);
-                /*
-                if (title != "")
-                {
-                    EntryCollection.Add(title, nextEntry);
-
-                    OnEntryChanged(nextEntry.Title, ARU.Added, write);
-                } else
-                {
-                    // url as entry title & key
-                    EntryCollection.Add(url, nextEntry);
-                    OnEntryChanged(url, ARU.Added, write);
-                }*/
 
             }
             catch (ArgumentException e)
@@ -107,6 +100,12 @@ namespace Web_Browser
             }
         }
 
+        /// <summary>
+        /// Instantiate a new entry, handle empty title case
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="title"></param>
+        /// <returns></returns>
         private EntryElement instantiateEntry(string url, string title)
         {
             EntryElement nextEntry;
@@ -120,6 +119,12 @@ namespace Web_Browser
             return nextEntry;
         }
 
+        /// <summary>
+        /// Method for child classes to override, called by an event that occurs when an entry title has a name collision
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="element"></param>
+        /// <param name="write"></param>
         public virtual void KeyExists(ArgumentException e, EntryElement element, bool write)
         {
             // Key already exists / null key
@@ -145,21 +150,32 @@ namespace Web_Browser
                 OnEntryChanged(title, ARU.Removed, write);
             }
         }
-
+        /// <summary>
+        /// clear all elements from the list
+        /// </summary>
+        /// <param name="write"></param>
         public void ClearList(bool write)
         {
             _EntryCollection.Clear();
             OnEntryChanged(null, ARU.Cleared, write);
         }
 
-
+        /// <summary>
+        /// get the list object
+        /// </summary>
+        /// <returns></returns>
         public List<EntryElement> GetList()
         {
             _EntryCollection.Sort();
             return _EntryCollection;
         }
 
-
+        /// <summary>
+        /// Edit the url of an entry, use title to find the entry
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="url"></param>
+        /// <param name="write"></param>
         public void EditEntryUrl(string title, string url, bool write)
         {
             EntryElement nextEntry = new EntryElement(url, title, GetTime(title), _sortStrategy);
@@ -180,6 +196,12 @@ namespace Web_Browser
             OnEntryChanged(title, ARU.Updated, write);
         }
 
+        /// <summary>
+        /// Edit the title of an entry
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="nextTitle"></param>
+        /// <param name="write"></param>
         public void EditEntryTitle(string title, string nextTitle, bool write)
         {
             EntryElement nextEntry = new EntryElement(GetUrl(title), nextTitle, GetTime(title), _sortStrategy);
@@ -191,6 +213,13 @@ namespace Web_Browser
             OnEntryChanged(title, ARU.Updated, write);
         }
 
+        /// <summary>
+        /// Edit the title and url of an entry
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="nextTitle"></param>
+        /// <param name="nextUrl"></param>
+        /// <param name="write"></param>
         public void EditEntry(string title, string nextTitle, string nextUrl, bool write)
         {
             EntryElement nextEntry = new EntryElement(nextUrl, nextTitle, GetTime(title), _sortStrategy);
@@ -205,7 +234,11 @@ namespace Web_Browser
             OnEntryChanged(nextTitle, ARU.Added, write);
         }
 
-
+        /// <summary>
+        /// Pass an entry object with a title already in the list (use with care)
+        /// </summary>
+        /// <param name="nextEntry"></param>
+        /// <param name="write"></param>
         public void EditEntry(EntryElement nextEntry, bool write)
         {
             string title = nextEntry.Title;   
@@ -230,24 +263,43 @@ namespace Web_Browser
             return _EntryCollection[index].Url;
         }
 
-
+        /// <summary>
+        /// Get the time of the entry with name title
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
         public DateTime GetTime(string title)
         {
             int index = GetIndex(title);
             return _EntryCollection[index].AccessTime;
         }
 
+        /// <summary>
+        /// Get the index in the list of the entry with name title
+        /// </summary>
+        /// <param name="title"></param>
+        /// <returns></returns>
         public int GetIndex(string title)
         {
             return _EntryCollection.FindIndex(entry => entry.Title.Equals(title));
         }
 
-
+        /// <summary>
+        ///  Get the entry object at the specified index
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public EntryElement GetEntry(int index)
         {
             return _EntryCollection[index];
         }
 
+        /// <summary>
+        /// Event called whenever a change to the list occurs
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="state"></param>
+        /// <param name="WriteFile"></param>
         void OnEntryChanged(string title, ARU state, bool WriteFile)
         {
             EntryRecordChanged updatedEntry = new EntryRecordChanged();
@@ -264,13 +316,18 @@ namespace Web_Browser
             }
         }
 
-
+        /// <summary>
+        /// Method to serialize the list
+        /// </summary>
         public void SerializeCollection()
         {
             _EntryCollection.Sort();
             persistanceManager.SerializeCollection(_EntryCollection);
         }
 
+        /// <summary>
+        /// Method to deserialize the list
+        /// </summary>
         public void DeserializeCollection()
         {
             List<EntryElement> _tempCollection = persistanceManager.DeserializeCollection();
@@ -350,6 +407,11 @@ namespace Web_Browser
 
         public CompareBy Compareby;
 
+        /// <summary>
+        /// Implement CompareTo for sorting algorithm
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public int CompareTo(EntryElement other)
         {
             if (other == null) return 1;

@@ -1,10 +1,108 @@
 \documentclass[../Main.tex]{subfiles}
 
 \begin{document}
-pruning\\
-distillation\\
-Quantization\\
-Network design strategies\\
-low-rank factorization
+
+This Section will provide a comprehensive requirements checklist. 
+The requirements have been split into 2 sections: Section.~\ref{subsec:ModelRequirements} (Model Requirements) contains all the requirements related to the "business logic", Section.~\ref{subsec:UIRequirements} (User Interface Requirements) will describe all the requirements related to the user interface view and control components.
+
+Requirements marked with the Priority \textbf{Essential} are requirements explicitly requested in the task brief.\\
+\linebreak
+\noindent{\Large \emph{The priority for each requirement is encoded as follows:}}
+
+\begin{itemize}
+    \item \textbf{Essential} - This priority indicates that this requirement must be implemented to satisfy basic functionality of the browser.
+    \item High - A high priority indicates that this requirement is important for providing a good quality user experience.
+    \item Medium - A medium priority requirement is nice to have but if it is missing it is acceptable.
+    \item Low - Low priority indicates that this is unlikely to be fulfilled within the time frame of the project, a stretch goal at best.
+\end{itemize}
+
+\subsection{Model Requirements}\label{subsec:ModelRequirements}
+
+\begin{center}
+    \begin{longtable}{|p{3cm}|p{7cm}|l|p{2cm}|}
+        \hline
+        \textbf{Requirement} & \textbf{Description} & \textbf{Priority} & \textbf{Status}\\
+        \hline \endhead
+        Send HTTP requests & Send HTTP request messages for URLs typed by the user & \textbf{Essential} & Complete\\
+        \hline 
+        Recieve HTTP responses & recieve and store HTML code \& response status codes & \textbf{Essential} & Complete \\
+        \hline
+        Display HTTP response & Display HTTP statuscode \& the title of the web page & \textbf{Essential} & Complete\\
+        \hline
+        Home page & Create and edit home page URL & \textbf{Essential} & Complete \\
+        \hline
+        Favourites & Add URL with name to a list of favourite web pages & \textbf{Essential} & Complete \\
+        \hline
+        Navigate to Favourite & Seleting a favourite from the lsit will navigate to the page & \textbf{Essential} & Complete\\
+        \hline
+        Modify Favourites & Support editing \& removing favourite items & \textbf{Essential} & Complete \\
+        \hline
+        History & A list of visited URLs should be maintained & \textbf{Essential} & Complete\\
+        \hline
+        Navigate history & Selecting a history item from the list will navigate to the page & \textbf{Essential} & Complete\\
+        \hline
+        Persistant home page & Store the home page url locally and load it to the browser on startup & \textbf{Essential} & Complete \\
+        \hline
+        Persistant favourites list & Serialize the favourites list and load it to the browser on startup & \textbf{Essential} & Complete \\
+        \hline
+        Persistant history list & Serialize the history list and load it to the browser on startup & \textbf{Essential} & Complete \\
+        \hline
+        Status code error messages & Support for the corresponding messages for the following status codes: 200, 400, 403, 404 & \textbf{Essential} & Complete \\
+        \hline
+        Modify history & The user should be able to clear all or specific history items & Medium & Complete\\
+        \hline
+        History names & The list of URLs should have reference to the associated page title & Medium & Complete \\
+        \hline 
+        Sort history & Sort the history chronologically (using the access time) & Medium & Complete \\
+        \hline
+        Sort favourites & Sort the favourites by their associated names alphabetically & Medium & Complete \\
+        \hline
+        Prepend incomplete URL with protocol & Prepend the protocol "http://" \& "www." to the URL when missing & Low & Incomplete \\
+        \hline
+
+    \end{longtable}
+\end{center}
+
+\subsection{User Interface Requirements}\label{subsec:UIRequirements}
+\begin{center}
+    \begin{longtable}{|p{3cm}|p{7cm}|l|p{2cm}|}
+        \hline
+        \textbf{Requirement} & \textbf{Description} & \textbf{Priority} & \textbf{Status}\\
+        \hline \endhead
+        URL input box & Enter a URL to send HTTP requests & \textbf{Essential} & Complete\\
+        \hline
+        Display HTML code & Main GUI view component for displaying HTML returned from a HTTP response & \textbf{Essential} & Complete\\
+        \hline
+        Display HTTP status code & A GUI element of a users HTTP status codes \& their corresponding messages & \textbf{Essential} & Complete\\
+        \hline
+        Display web page title & Web page title displayed at top of browser window & \textbf{Essential} & Complete\\
+        \hline
+        Navigate to home page button & A button that when pressed navigates to the home page & \textbf{Essential} & Complete\\
+        \hline
+        Set home page & A button to set the current page as the home page & \textbf{Essential} & Complete\\
+        \hline
+        Set favourites & A button to set the current page as a favourite with the page title as the associated name & \textbf{Essential} & Complete\\
+        \hline
+        Set custom favourite & A button to set a favourite with a user defined title & \textbf{Essential} & Complete\\
+        \hline
+        View favourites list & A selectable menu to display all favourites currently represented in the model favourites list & \textbf{Essential} & Complete\\
+        \hline
+        Edit favourites window & A window that enables the user to delete or update favourites & \textbf{Essential} & Complete\\
+        \hline
+        View history list & A selectable menu to display all history items currently represented in the models history list & \textbf{Essential} & Complete\\
+        \hline
+        Edit history window & A window that provides controls enabling the user to delete or edit history items & \textbf{Essential} & Complete\\
+        \hline
+        URL input box & Enter a URL to send HTTP requests & \textbf{Essential} & Complete\\
+        \hline
+        Shortcut keybinds & Make use of shortcut keys to improve accessibility & \textbf{Essential} & Partially Complete\\
+        \hline
+        Display sorted history menu items & Render the history list in sorted order & Medium & Incomplete \\
+        \hline
+        Display sorted favourites menu items & Render the favourites list in sorted order & Medium & Incomplete \\
+        \hline
+    \end{longtable}
+
+\end{center}
 
 \end{document}
