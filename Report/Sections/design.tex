@@ -39,7 +39,7 @@ This design was heavily inspired by existing browser designs so a user should be
 
 \subsection{Advanced language constucts}
 
-Delegates have been used extensively throughout this body of work, particularly when using delegates to invoke a method from an event handler see Fig.~\ref{fig:DelegatesExample}. Anonymous delegates have been very useful during unit testing, specifically to check if an event had been triggered see Fig.~\ref{fig:DelegatesExample}.~\autocite{billwagnerDelegatesProgrammingGuide}
+Delegates have been used extensively throughout this body of work, particularly when paired with event handlers where delegates are used to invoke methods, see Fig.~\ref{fig:DelegatesExample}. Anonymous delegates have been very useful during unit testing, specifically to check if an event had been triggered see Fig.~\ref{fig:DelegatesExample}.~\autocite{billwagnerDelegatesProgrammingGuide}
 
 \textbf{Favourites} and \textbf{History} both use a singleton pattern for instantiation (there should only be a single instance of each), to do this in a thread safe manner the Lazy\genT class was used with the Enum LazyThreadSafetyMode.ExecutionAndPublication parameter see Fig.~\ref{fig:LazySingletonExample}.~\autocite{dotnet-botLazyClassSystem,dotnet-botLazyThreadSafetyModeEnumSystem}
 

@@ -12,7 +12,7 @@ A high level description of the underlaying model class design can can be found 
 
 \subsection{Interacting with the model}
 
-Assuming you have representations of the GUI elements described in Section.~\ref{subsec:GuiDes}, first insantiate the \textbf{History} \& \textbf{Favourites} classes so you can assign their event methods. See Fig.~\ref{fig:instantiateHistFav}
+Assuming you have representations of the GUI elements described in Section.~\ref{subsec:GuiDes}, first insantiate the \textbf{History} \& \textbf{Favourites} classes so you can assign their event handlers. See Fig.~\ref{fig:instantiateHistFav}
 
 \begin{figure}[H]
     \begin{minted}[linenos]{csharp}
@@ -67,5 +67,17 @@ Now that we have our History and Favourites instances we can instantiate a \text
 \end{figure}
 
 At this point you just need to use the public methods in the \textbf{PageContent}, \textbf{History}, and \textbf{Favourites} classes to update the view, and to send control commands to the model. See Fig.\ref{fig:PageConentMethods} for a description of the \textbf{PageContent} class important public methods and their signatures. Likewise see Fig.~\ref{fig:EntryRecordMethods} for a non-exhaustive summary of useful public \textbf{History}/\textbf{Favourites} methods.
+
+\subsection{GUI elements}
+
+This solution uses 4 Windows Forms classes, \textbf{BrowserWindow}, \textbf{EntryCollectionEditor}, \textbf{EntryEditor}, and \textbf{FavouritesDialogue}.
+
+\textbf{BrowserWindow} is the class representing the actual browser itself, all the GUI components for this class but the dropdown menu are visible in Fig.~\ref{fig:BasicView}. Once the basic shape of the Windows forms controls has been defined its just a matter of linking up all the events with appropriate methods called within the \textbf{PageContent}, \textbf{Favourites} and \textbf{History} classes.
+
+\textbf{EntryCollectionEditor} holds a reference to the \textbf{EntryRecord} that contains the List being painted onto the ListView that way any change made to the underlaying source List means that the source List can be used to repaint the ListViewContents. The rest is mostly event handlers that trigger behaviour based on button presses, selection changes ect.
+
+\textbf{EntryEditor} is a very simple component, it is comprised of 2 text input boxes corresponging to the title and url of the entry. If the user makes a change and presses ok, the underlaying element gets mutated an event gets triggered and the window closes.
+
+\textbf{FavouritesDialogue} has very similar appearence to \textbf{EntryEditor} but it doesnt use any event handlers. it simply allows the user to instantiate a new EntryElement for the Favourites object.
 
 \end{document}
